@@ -207,9 +207,9 @@ Generated: 2026-07-02T15:15:13.991-05:00
 - [x] Update plan status to `Validated`
 
 ### Phase 4: Deployment
-- [ ] Invoke `azure-deploy`
-- [ ] Deployment successful
-- [ ] Report deployed endpoint URLs
+- [x] Invoke `azure-deploy`
+- [x] Deployment successful
+- [x] Report deployed endpoint URLs
 - [ ] Update plan status to `Deployed`
 
 ---
@@ -258,10 +258,10 @@ Generated: 2026-07-02T15:15:13.991-05:00
 
 > Current: deployment in progress (control-plane gates mostly cleared)
 
-1. Push the Dockerfile fix (`mkdir -p public`) so GitHub Actions can build the `maude-web` image from `main`.
-2. Re-run `Deploy Azure Container Apps` for `dev` and verify both `build-and-push` and `deploy` jobs complete.
-3. Validate `https://<aca-fqdn>/` and `https://<aca-fqdn>/docs` after the deploy job updates image tags.
-4. Promote with the same workflow to `prod` behind the existing environment approval gate.
+1. Promote the same deployment workflow path to `prod` with the existing approval gate enabled.
+2. Validate `https://<aca-fqdn>/`, `https://<aca-fqdn>/docs`, and Entra sign-in behavior in `prod`.
+3. Finalize PostgreSQL business-hours automation and alert threshold tuning in production.
+4. Update plan status to `Deployed` after production validation is complete.
 
 ## 11. Deployment Gate Tracker (Live)
 
@@ -273,4 +273,4 @@ Generated: 2026-07-02T15:15:13.991-05:00
 | RBAC for deploy identity | ✅ Complete | Reader at subscription, Contributor + User Access Administrator at `rg-maude-dev`, and AcrPush at `maudedevacr` |
 | Dev workflow Azure login | ✅ Complete | `Azure login (OIDC)` step now passes in run `28811115950` |
 | Dev workflow image build | ✅ Complete | `build-and-push` succeeded in run `28811332456` (web + docs images pushed to ACR) |
-| Dev workflow deploy + endpoint verification | ⚠️ Blocked (fix prepared) | Workflow run `28813931093` deploys successfully and root is live (`307` to sign-in), but `/docs` returns `500` from docs sidecar due `nginx` fallback rewrite cycle; docs container config was corrected to `try_files ... /index.html`, pending redeploy |
+| Dev workflow deploy + endpoint verification | ✅ Complete | Workflow run `28814433100` completed successfully; active revision `maude-dev-web--0000009` serves `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/` (`307`) and `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/docs` (`200`) |
