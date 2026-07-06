@@ -1,4 +1,7 @@
 import DiveFrame from '@/app/components/DiveFrame';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { evaluateTeamsAccess } from '@/lib/teams-access';
 import { verifyTeamsTabStateToken } from '@/lib/teams-tab-state';
 import TeamsSsoBootstrap from './TeamsSsoBootstrap';
 
@@ -11,6 +14,9 @@ interface TeamsExplorerPageProps {
 }
 
 export default async function TeamsExplorerPage({ searchParams }: TeamsExplorerPageProps) {
+  const session = await getServerSession(authOptions);
+  const accessDecision = evaluateTeamsAccess(session);
+
   const params = await searchParams;
   const stateToken = getSingleValue(params.state);
   const directDiveId = getSingleValue(params.diveId);
@@ -19,11 +25,16 @@ export default async function TeamsExplorerPage({ searchParams }: TeamsExplorerP
   const directVersion = getSingleValue(params.version);
 
   const verifiedState = stateToken ? verifyTeamsTabStateToken(stateToken) : null;
+  const hasInvalidStateToken = Boolean(stateToken && !verifiedState);
 
-  const diveId = verifiedState?.diveId || directDiveId;
-  const diveUrl = verifiedState?.diveUrl || directDiveUrl;
-  const title = verifiedState?.title || directTitle || 'Teams Dive workspace';
-  const version = verifiedState?.version ?? (directVersion ? Number(directVersion) : undefined);
+  const diveId = !hasInvalidStateToken ? verifiedState?.diveId || directDiveId : undefined;
+  const diveUrl = !hasInvalidStateToken ? verifiedState?.diveUrl || directDiveUrl : undefined;
+  const title = !hasInvalidStateToken
+    ? verifiedState?.title || directTitle || 'Teams Dive workspace'
+    : 'Teams Dive workspace';
+  const version = !hasInvalidStateToken
+    ? verifiedState?.version ?? (directVersion ? Number(directVersion) : undefined)
+    : undefined;
 
   return (
     <main className="signin-page">
@@ -35,9 +46,27 @@ export default async function TeamsExplorerPage({ searchParams }: TeamsExplorerP
           Microsoft Teams. A deep-link state token can pre-load the target Dive
           and preserve its analysis context.
         </p>
-        <TeamsSsoBootstrap />
+        {!accessDecision.allowed ? (
+          <div className="teams-tab-auth-state">
+            <strong>Access required:</strong> {accessDecision.userMessage}
+            {accessDecision.code === 'auth_required' ? (
+              <p>
+                Continue by signing in at <a href="/signin">/signin</a>, then open the tab again from
+                Microsoft Teams.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
 
-        {diveId ? (
+        {accessDecision.allowed ? <TeamsSsoBootstrap /> : null}
+
+        {hasInvalidStateToken ? (
+          <div className="dive-frame-state error">
+            The tab context token could not be validated. Please reopen the tab from a fresh Teams deep link.
+          </div>
+        ) : null}
+
+        {accessDecision.allowed && diveId ? (
           <DiveFrame
             diveId={diveId}
             diveUrl={diveUrl}
@@ -46,8 +75,9 @@ export default async function TeamsExplorerPage({ searchParams }: TeamsExplorerP
           />
         ) : (
           <div className="dive-frame-state">
-            No Dive was specified. Pass a verified state token or a direct
-            `diveId` query string when opening this tab.
+            {!accessDecision.allowed
+              ? 'Sign in and complete authorization checks before loading a Dive in this tab.'
+              : 'No Dive was specified. Pass a verified state token or a direct `diveId` query string when opening this tab.'}
           </div>
         )}
       </section>

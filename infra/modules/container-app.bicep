@@ -16,6 +16,8 @@ param teamsApiApplicationIdUri string = ''
 param teamsOboClientId string = ''
 param teamsOboScopes string = 'User.Read'
 param teamsSsoAllowedAudiences string = ''
+param teamsAllowedRoles string = ''
+param teamsAllowedGroups string = ''
 param motherDuckDiveServiceAccountUsername string
 param motherDuckAllowedDatabases string
 param motherDuckDefaultDatabase string
@@ -185,6 +187,14 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             {
               name: 'TEAMS_SSO_ALLOWED_AUDIENCES'
               value: teamsSsoAllowedAudiences
+            }
+            {
+              name: 'TEAMS_ALLOWED_ROLES'
+              value: teamsAllowedRoles
+            }
+            {
+              name: 'TEAMS_ALLOWED_GROUPS'
+              value: teamsAllowedGroups
             }
             {
               name: 'OPENAI_API_KEY'

@@ -49,6 +49,12 @@
     "teamsSsoAllowedAudiences": {
       "value": "00000000-0000-0000-0000-000000000000"
     },
+    "teamsAllowedRoles": {
+      "value": "Teams.PilotUser"
+    },
+    "teamsAllowedGroups": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
     "azureAdClientSecret": {
       "reference": {
         "keyVault": {

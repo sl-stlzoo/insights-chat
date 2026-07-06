@@ -49,6 +49,12 @@ param teamsOboScopes string = 'User.Read'
 @description('Comma-delimited allowlist of accepted Teams SSO token audiences.')
 param teamsSsoAllowedAudiences string = ''
 
+@description('Comma-delimited app-role allowlist for Teams tab/API access.')
+param teamsAllowedRoles string = ''
+
+@description('Comma-delimited group-object-id allowlist for Teams tab/API access.')
+param teamsAllowedGroups string = ''
+
 @secure()
 @description('Random secret used by NextAuth to sign session cookies.')
 param nextAuthSecret string
@@ -279,6 +285,8 @@ module containerApp './modules/container-app.bicep' = {
     teamsOboClientId: teamsOboClientId
     teamsOboScopes: teamsOboScopes
     teamsSsoAllowedAudiences: teamsSsoAllowedAudiences
+    teamsAllowedRoles: teamsAllowedRoles
+    teamsAllowedGroups: teamsAllowedGroups
     motherDuckDiveServiceAccountUsername: motherDuckDiveServiceAccountUsername
     motherDuckAllowedDatabases: motherDuckAllowedDatabases
     motherDuckDefaultDatabase: motherDuckDefaultDatabase

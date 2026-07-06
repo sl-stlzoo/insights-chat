@@ -147,6 +147,8 @@ Use GitHub OIDC federation (no long-lived Azure secret) with `azure/login`.
 - `TEAMS_OBO_CLIENT_ID` (defaults to `APP_AZURE_AD_CLIENT_ID` if omitted)
 - `TEAMS_OBO_SCOPES` (for example `User.Read`)
 - `TEAMS_SSO_ALLOWED_AUDIENCES` (comma-separated app ID allowlist)
+- `TEAMS_ALLOWED_ROLES` (optional comma-separated app-role allowlist)
+- `TEAMS_ALLOWED_GROUPS` (optional comma-separated group object ID allowlist)
 - `MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME`
 - `MOTHERDUCK_ALLOWED_DATABASES` (for example `za_edw_pov`)
 - `MOTHERDUCK_DEFAULT_DATABASE` (for example `za_edw_pov`)
@@ -200,6 +202,8 @@ Canonical references:
 | `TEAMS_OBO_CLIENT_ID` | Confidential app ID for OBO exchange | Entra app registration used by backend | Runtime OBO client identity | Same as above |
 | `TEAMS_OBO_SCOPES` | Space-separated delegated scopes | Downstream API least-privilege design (`User.Read`, custom scopes, etc.) | Constrains OBO token exchange privileges | Same as above |
 | `TEAMS_SSO_ALLOWED_AUDIENCES` | Comma-separated accepted SSO token audiences | Teams tab/app IDs for the environment | Prevents accepting tokens minted for unrelated audiences | Same as above |
+| `TEAMS_ALLOWED_ROLES` | Optional comma-separated app-role allowlist | Entra app role design for pilot/prod personas | Enforces least-privilege role checks on Teams tab/API entry points | Same as above |
+| `TEAMS_ALLOWED_GROUPS` | Optional comma-separated group object ID allowlist | Entra group assignments for pilot/prod personas | Enforces least-privilege group checks on Teams tab/API entry points | Same as above |
 | `MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME` | MotherDuck service account user for Dive embed sessions | MotherDuck workspace/org setup | Runtime identity for Dive embed-session flow | Same as above |
 | `MOTHERDUCK_ALLOWED_DATABASES` | Comma-separated MotherDuck database allowlist | Data access policy for the environment (for example `za_edw_pov`) | API-side guardrail restricting SQL target databases | Same as above |
 | `MOTHERDUCK_DEFAULT_DATABASE` | Default MotherDuck database name | Primary runtime database selection (for example `za_edw_pov`) | Prompt context + MCP preflight verification target | Same as above |

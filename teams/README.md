@@ -34,6 +34,8 @@ delivery model described in the updated PRD.
 - `TEAMS_SSO_ALLOWED_AUDIENCES` constrains accepted incoming Teams SSO token
   audiences.
 - `TEAMS_OBO_SCOPES` limits downstream delegated scopes to a least-privilege set.
+- `TEAMS_ALLOWED_ROLES` and `TEAMS_ALLOWED_GROUPS` enforce optional app-role/group
+  checks on Teams tab and API entry points.
 
 All of the above are wired through:
 

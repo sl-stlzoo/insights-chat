@@ -6,6 +6,7 @@ type TeamsSsoState = 'booting' | 'ready' | 'error' | 'skipped';
 
 interface TeamsSsoExchangeResponse {
   error?: string;
+  errorCode?: string;
   exchanged?: boolean;
 }
 
@@ -41,6 +42,12 @@ export default function TeamsSsoBootstrap() {
         const payload = (await response.json()) as TeamsSsoExchangeResponse;
 
         if (!response.ok || !payload.exchanged) {
+          if (payload.errorCode === 'auth_required') {
+            throw new Error('Sign in to the app before continuing in Microsoft Teams.');
+          }
+          if (payload.errorCode === 'missing_required_role' || payload.errorCode === 'missing_required_group') {
+            throw new Error('Your account is not authorized for this Teams tab environment.');
+          }
           throw new Error(payload.error || 'Teams OBO exchange was not completed.');
         }
 
