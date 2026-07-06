@@ -76,7 +76,9 @@ with least-privilege access controls.
 
 - **Stage 1:** Complete (env contract wired through `.env.example`, `infra/*`,
   `.github/workflows/deploy-aca.yml`, and `teams/README.md`).
-- **Stage 2:** In progress.
+- **Stage 2:** Complete (`app/api/teams/sso/obo/route.ts`,
+  `lib/teams-obo.ts`, `app/tab/explorer/TeamsSsoBootstrap.tsx`,
+  `teams/manifest.{dev,pilot,prod}.json`, and `npm run teams:validate`).
 
 ## Gate discipline
 

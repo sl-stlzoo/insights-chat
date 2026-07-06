@@ -1,5 +1,6 @@
 import DiveFrame from '@/app/components/DiveFrame';
 import { verifyTeamsTabStateToken } from '@/lib/teams-tab-state';
+import TeamsSsoBootstrap from './TeamsSsoBootstrap';
 
 function getSingleValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -34,6 +35,7 @@ export default async function TeamsExplorerPage({ searchParams }: TeamsExplorerP
           Microsoft Teams. A deep-link state token can pre-load the target Dive
           and preserve its analysis context.
         </p>
+        <TeamsSsoBootstrap />
 
         {diveId ? (
           <DiveFrame

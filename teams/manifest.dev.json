@@ -1,0 +1,50 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.16",
+  "id": "${TEAMS_DEV_APP_ID}",
+  "version": "1.2.0",
+  "packageName": "com.enterprise.maude.analytics.dev",
+  "developer": {
+    "name": "Enterprise Analytics",
+    "websiteUrl": "https://${TEAMS_DEV_APP_DOMAIN}",
+    "privacyUrl": "https://${TEAMS_DEV_APP_DOMAIN}/docs",
+    "termsOfUseUrl": "https://${TEAMS_DEV_APP_DOMAIN}/docs"
+  },
+  "name": {
+    "short": "Maude Dev",
+    "full": "Maude Analytics Assistant (Dev)"
+  },
+  "description": {
+    "short": "Secure MotherDuck analytics assistant (dev).",
+    "full": "Development Teams package for tab-first analytics with Entra SSO and backend OBO exchange."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#005589",
+  "defaultInstallScope": "personal",
+  "staticTabs": [
+    {
+      "entityId": "maudeDiveViewerTab",
+      "name": "Data Explorer Workspace",
+      "contentUrl": "https://${TEAMS_DEV_APP_DOMAIN}/tab/explorer",
+      "websiteUrl": "https://${TEAMS_DEV_APP_DOMAIN}/tab/explorer",
+      "scopes": ["personal"]
+    }
+  ],
+  "bots": [
+    {
+      "botId": "${TEAMS_DEV_BOT_ID}",
+      "scopes": ["personal", "team"],
+      "supportsFiles": false,
+      "isNotificationOnly": false
+    }
+  ],
+  "permissions": ["identity"],
+  "validDomains": ["${TEAMS_DEV_APP_DOMAIN}"],
+  "webApplicationInfo": {
+    "id": "${TEAMS_DEV_TAB_AAD_APP_ID}",
+    "resource": "${TEAMS_DEV_API_APPLICATION_ID_URI}"
+  }
+}

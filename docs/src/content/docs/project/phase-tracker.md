@@ -24,8 +24,8 @@ description: Execution tracker for the Azure modernization effort.
 |---|---|---|
 | T1 | Lock target architecture (tab primary + bot assistive/proactive) | Complete |
 | T2 | Finalize Entra app model (registrations, redirects, scopes, consent) | Complete |
-| T3 | Teams SSO and OBO flow implementation | Planned |
-| T4 | Manifest hardening (`dev`, `pilot`, `prod`) | Planned |
+| T3 | Teams SSO and OBO flow implementation | Complete |
+| T4 | Manifest hardening (`dev`, `pilot`, `prod`) | Complete |
 | T5 | Tab UX readiness for Teams iframe/runtime | Planned |
 | T6 | Bot command and deep-link surface | Planned |
 | T7 | Group/app-role authorization + MotherDuck policy mapping | Planned |
@@ -53,8 +53,8 @@ description: Execution tracker for the Azure modernization effort.
 - [x] Lock hybrid Teams target architecture in platform docs
 - [x] Publish comprehensive implementation process and sequencing
 - [x] Finalize production Entra app registrations and consent scopes
-- [ ] Implement Teams SSO token exchange and backend OBO
-- [ ] Harden and validate env-specific Teams manifests (`dev`, `pilot`, `prod`)
+- [x] Implement Teams SSO token exchange and backend OBO
+- [x] Harden and validate env-specific Teams manifests (`dev`, `pilot`, `prod`)
 - [ ] Complete Teams-safe tab UX and Fluent session/auth states
 - [ ] Add bot commands and deep-link handoff to tab context
 - [ ] Enforce app-role/group authorization with least-privilege mapping

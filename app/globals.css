@@ -1054,6 +1054,29 @@ body {
   color: var(--coral);
 }
 
+.teams-sso-state {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--charcoal);
+  font-size: 13px;
+}
+
+.teams-sso-state strong {
+  color: var(--blue-dark);
+}
+
+.teams-sso-state.ready {
+  border-color: rgba(76, 160, 68, 0.45);
+  color: #2a5f2d;
+}
+
+.teams-sso-state.error {
+  border-color: rgba(138, 36, 51, 0.5);
+  color: var(--coral);
+}
+
 .dive-frame-iframe {
   width: 100%;
   min-height: 640px;

@@ -49,12 +49,26 @@ The detailed rollout sequence lives in:
 - `docs/src/content/docs/project/teams-implementation-process.md`
 - `docs/src/content/docs/project/phase-tracker.md`
 
-## Planned artifact shape
+## Stage 2 delivery artifacts
 
-As the Teams move progresses, this directory is expected to hold:
+- `manifest.template.json` (baseline contract with least-privilege permissions)
+- `manifest.dev.json`
+- `manifest.pilot.json`
+- `manifest.prod.json`
+- `validate-manifests.mjs` (hardening gate for schema/security checks)
 
-- `manifest.template.json` (baseline contract)
-- environment-specific manifests (for example `manifest.dev.json`,
-  `manifest.pilot.json`, `manifest.prod.json`) with hardened `validDomains`,
-  `webApplicationInfo`, and least-privilege permissions
-- packaging/signing notes used by CI/CD promotion workflows
+Environment manifests expect environment-specific placeholder values:
+
+- `TEAMS_<ENV>_APP_ID`
+- `TEAMS_<ENV>_BOT_ID`
+- `TEAMS_<ENV>_APP_DOMAIN`
+- `TEAMS_<ENV>_TAB_AAD_APP_ID`
+- `TEAMS_<ENV>_API_APPLICATION_ID_URI`
+
+## Validation gate
+
+Run manifest policy checks locally before packaging:
+
+```bash
+npm run teams:validate
+```

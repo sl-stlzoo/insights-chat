@@ -1,22 +1,22 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
   "manifestVersion": "1.16",
-  "id": "${TEAMS_APP_ID}",
+  "id": "${TEAMS_PROD_APP_ID}",
   "version": "1.2.0",
-  "packageName": "com.enterprise.maude.analytics",
+  "packageName": "com.enterprise.maude.analytics.prod",
   "developer": {
     "name": "Enterprise Analytics",
-    "websiteUrl": "${PUBLIC_APP_URL}",
-    "privacyUrl": "${PUBLIC_APP_URL}/docs",
-    "termsOfUseUrl": "${PUBLIC_APP_URL}/docs"
+    "websiteUrl": "https://${TEAMS_PROD_APP_DOMAIN}",
+    "privacyUrl": "https://${TEAMS_PROD_APP_DOMAIN}/docs",
+    "termsOfUseUrl": "https://${TEAMS_PROD_APP_DOMAIN}/docs"
   },
   "name": {
-    "short": "Maude Foundry",
+    "short": "Maude",
     "full": "Maude Analytics Assistant"
   },
   "description": {
     "short": "Secure MotherDuck analytics assistant.",
-    "full": "Queries corporate data stores via Azure AI Foundry endpoints, surfacing telemetry in a Teams-ready Dive workspace."
+    "full": "Production Teams package for tab-first analytics with Entra SSO and backend OBO."
   },
   "icons": {
     "color": "color.png",
@@ -28,25 +28,23 @@
     {
       "entityId": "maudeDiveViewerTab",
       "name": "Data Explorer Workspace",
-      "contentUrl": "${PUBLIC_APP_URL}/tab/explorer",
-      "websiteUrl": "${PUBLIC_APP_URL}/tab/explorer",
+      "contentUrl": "https://${TEAMS_PROD_APP_DOMAIN}/tab/explorer",
+      "websiteUrl": "https://${TEAMS_PROD_APP_DOMAIN}/tab/explorer",
       "scopes": ["personal"]
     }
   ],
   "bots": [
     {
-      "botId": "${TEAMS_BOT_ID}",
+      "botId": "${TEAMS_PROD_BOT_ID}",
       "scopes": ["personal", "team"],
       "supportsFiles": false,
       "isNotificationOnly": false
     }
   ],
   "permissions": ["identity"],
-  "validDomains": [
-    "${APP_DOMAIN}"
-  ],
+  "validDomains": ["${TEAMS_PROD_APP_DOMAIN}"],
   "webApplicationInfo": {
-    "id": "${TEAMS_TAB_AAD_APP_ID}",
-    "resource": "${TEAMS_API_APPLICATION_ID_URI}"
+    "id": "${TEAMS_PROD_TAB_AAD_APP_ID}",
+    "resource": "${TEAMS_PROD_API_APPLICATION_ID_URI}"
   }
 }

@@ -10,11 +10,13 @@
     "db:init": "npx tsx scripts/init-db.ts",
     "docs:dev": "npm --prefix docs run dev",
     "docs:build": "npm --prefix docs run build",
-    "docs:check": "npm --prefix docs run check"
+    "docs:check": "npm --prefix docs run check",
+    "teams:validate": "node teams/validate-manifests.mjs"
   },
   "dependencies": {
     "@azure/identity": "^4.11.1",
     "@fluentui/react-components": "^9.74.3",
+    "@microsoft/teams-js": "^2.53.1",
     "@modelcontextprotocol/sdk": "^1.25.1",
     "@types/leaflet": "^1.9.21",
     "leaflet": "^1.9.4",
