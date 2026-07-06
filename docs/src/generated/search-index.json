@@ -60,7 +60,7 @@
     "title": "ADR index",
     "description": "Architecture decision log for the Azure modernization.",
     "slug": "/adr/",
-    "body": "Architecture Decision Records The ADRs in this section explain **why** the current architecture and delivery approach were chosen. - ADR 0001 - ADR 0002 - ADR 0003 - ADR 0004 - ADR 0005 - ADR 0006 - ADR 0008"
+    "body": "Architecture Decision Records The ADRs in this section explain **why** the current architecture and delivery approach were chosen. - ADR 0001 - ADR 0002 - ADR 0003 - ADR 0004 - ADR 0005 - ADR 0006 - ADR 0007 - ADR 0008"
   },
   {
     "id": "getting-started/overview",
