@@ -13,7 +13,7 @@ import {
   runToolAwareCompletion,
 } from '@/lib/openai-provider';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { isAbsolute, join } from 'path';
 import { query } from '@/lib/planetscale';
 import { marked } from 'marked';
 
@@ -572,8 +572,40 @@ interface ChatRequest {
   shareId?: string; // ID of a shared report to use as context
 }
 
-// Allowed databases - restrict access to only these
-const ALLOWED_DATABASES = ['eastlake'];
+type McpClient = Awaited<ReturnType<typeof createMcpClient>>;
+
+const DEFAULT_ALLOWED_DATABASES = ['za_edw_pov'];
+const DEFAULT_METADATA_FILE = 'metadata/za_edw_pov.md';
+
+function parseAllowedDatabases(rawValue: string | undefined): string[] {
+  if (!rawValue?.trim()) return [...DEFAULT_ALLOWED_DATABASES];
+  const parsed = rawValue
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  return parsed.length > 0 ? parsed : [...DEFAULT_ALLOWED_DATABASES];
+}
+
+const ALLOWED_DATABASES = parseAllowedDatabases(process.env.MOTHERDUCK_ALLOWED_DATABASES);
+const DEFAULT_DATABASE = process.env.MOTHERDUCK_DEFAULT_DATABASE?.trim() || ALLOWED_DATABASES[0] || '';
+const METADATA_FILE = process.env.MOTHERDUCK_METADATA_FILE?.trim() || DEFAULT_METADATA_FILE;
+
+function resolveMetadataFilePath(metadataFile: string): string {
+  return isAbsolute(metadataFile) ? metadataFile : join(process.cwd(), metadataFile);
+}
+
+function getDatabaseConfigurationError(): string | undefined {
+  if (ALLOWED_DATABASES.length === 0) {
+    return 'MOTHERDUCK_ALLOWED_DATABASES resolved to an empty list.';
+  }
+  if (!DEFAULT_DATABASE) {
+    return 'MOTHERDUCK_DEFAULT_DATABASE is empty and no allowed database fallback is available.';
+  }
+  if (!ALLOWED_DATABASES.some((db) => db.toLowerCase() === DEFAULT_DATABASE.toLowerCase())) {
+    return `MOTHERDUCK_DEFAULT_DATABASE '${DEFAULT_DATABASE}' must be included in MOTHERDUCK_ALLOWED_DATABASES (${ALLOWED_DATABASES.join(', ')}).`;
+  }
+  return undefined;
+}
 
 // Load prompt files from disk
 const promptsDir = join(process.cwd(), 'prompts');
@@ -595,6 +627,14 @@ function getPrompt(filename: string): string {
     promptCache[filename] = loadPromptFile(filename);
   }
   return promptCache[filename];
+}
+
+function buildDatabaseRulesPrompt(): string {
+  const template = getPrompt('database-rules.md').replace(/^# .*\n+/, '');
+  return composePrompt(template, {
+    ALLOWED_DATABASES: ALLOWED_DATABASES.join(', '),
+    DEFAULT_DATABASE,
+  });
 }
 
 // Dynamic content generators
@@ -630,7 +670,7 @@ const buildDataGatheringPromptComponent = (metadata?: string) => {
     'DATABASE_METADATA': getMetadataSection(metadata),
     'METADATA_USAGE_INSTRUCTIONS': getMetadataUsageInstructions(metadata),
     'NARRATION_DATABASE': getPrompt('narration-database.md').replace(/^# .*\n+/, ''),
-    'DATABASE_RULES': getPrompt('database-rules.md').replace(/^# .*\n+/, '').replace('{{ALLOWED_DATABASES}}', ALLOWED_DATABASES.join(', ')),
+    'DATABASE_RULES': buildDatabaseRulesPrompt(),
     'SCHEMA_EXPLORATION_STEP': metadata ? 'Review the DATABASE METADATA above' : 'Use list_tables and list_columns tools',
   });
 };
@@ -652,6 +692,8 @@ const getSystemPrompt = (isMobile: boolean, metadata?: string) => {
   const template = getPrompt('standalone-system-prompt.md').replace(/^# .*\n+/, '');
 
   return composePrompt(template, {
+    'ALLOWED_DATABASES': ALLOWED_DATABASES.join(', '),
+    'DEFAULT_DATABASE': DEFAULT_DATABASE,
     'DATA_GATHERING_PROMPT': buildDataGatheringPromptComponent(metadata),
     'REPORT_GENERATION_PROMPT': buildReportGenerationPromptComponent(isMobile),
   });
@@ -662,6 +704,8 @@ const getDataGatheringPrompt = (metadata?: string) => {
   const template = getPrompt('blended-data-gathering-prompt.md').replace(/^# .*\n+/, '');
 
   return composePrompt(template, {
+    'ALLOWED_DATABASES': ALLOWED_DATABASES.join(', '),
+    'DEFAULT_DATABASE': DEFAULT_DATABASE,
     'DATA_GATHERING_PROMPT': buildDataGatheringPromptComponent(metadata),
     'SKIP_SCHEMA_INSTRUCTION': metadata ? 'DO NOT waste time exploring schema - use the metadata provided. ' : '',
   });
@@ -672,10 +716,38 @@ const getReportGenerationPrompt = (isMobile: boolean) => {
   const template = getPrompt('blended-report-generation-prompt.md').replace(/^# .*\n+/, '');
 
   return composePrompt(template, {
-    'DATABASE_RULES': getPrompt('database-rules.md').replace(/^# .*\n+/, '').replace('{{ALLOWED_DATABASES}}', ALLOWED_DATABASES.join(', ')),
+    'ALLOWED_DATABASES': ALLOWED_DATABASES.join(', '),
+    'DEFAULT_DATABASE': DEFAULT_DATABASE,
+    'DATABASE_RULES': buildDatabaseRulesPrompt(),
     'REPORT_GENERATION_PROMPT': buildReportGenerationPromptComponent(isMobile),
   });
 };
+
+async function runDatabaseAccessPreflight(mcpClient: McpClient, mcpTools: LlmTool[]): Promise<void> {
+  const availableTools = new Set(mcpTools.map((tool) => tool.function.name));
+  const defaultDbLower = DEFAULT_DATABASE.toLowerCase();
+
+  if (availableTools.has('list_databases')) {
+    const dbListRaw = await executeTool(mcpClient, 'list_databases', {});
+    if (!dbListRaw.toLowerCase().includes(defaultDbLower)) {
+      throw new Error(
+        `Configured database '${DEFAULT_DATABASE}' was not returned by list_databases. Ensure the MotherDuck token can access this database.`,
+      );
+    }
+  }
+
+  if (availableTools.has('list_tables')) {
+    await executeTool(mcpClient, 'list_tables', { database: DEFAULT_DATABASE });
+    return;
+  }
+
+  if (availableTools.has('query')) {
+    await executeTool(mcpClient, 'query', { sql: 'SELECT 1 AS connectivity_check' });
+    return;
+  }
+
+  throw new Error('MCP preflight failed: neither list_tables nor query tools are available.');
+}
 
 // Check if a database reference is allowed
 function isDatabaseAllowed(dbName: string): boolean {
@@ -849,9 +921,17 @@ export async function POST(request: NextRequest) {
     const { messages, isMobile = false, includeMetadata = true, model, shareId } = body;
 
     const selectedModel = resolveChatModel(model || DEFAULT_MODEL);
+    const databaseConfigError = getDatabaseConfigurationError();
+    if (databaseConfigError) {
+      return new Response(JSON.stringify({ error: `Database configuration error: ${databaseConfigError}` }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
     console.log(`\n${'='.repeat(80)}`);
     console.log(`[Chat API] 🚀 REQUEST STARTED at ${new Date().toISOString()}`);
     console.log(`[Chat API] Model: ${model || DEFAULT_MODEL} -> ${selectedModel}, Mobile: ${isMobile}, Metadata: ${includeMetadata}`);
+    console.log(`[Chat API] Allowed DBs: ${ALLOWED_DATABASES.join(', ')}, Default DB: ${DEFAULT_DATABASE}`);
     console.log(`${'='.repeat(80)}`);
     if (shareId) {
       console.log('[Chat API] shareId provided:', shareId);
@@ -889,11 +969,11 @@ export async function POST(request: NextRequest) {
     let metadata: string | undefined;
     if (includeMetadata) {
       try {
-        const metadataPath = join(process.cwd(), 'eastlake_metadata.md');
+        const metadataPath = resolveMetadataFilePath(METADATA_FILE);
         metadata = readFileSync(metadataPath, 'utf-8');
-        console.log('[Chat API] Loaded metadata file, length:', metadata.length);
+        console.log(`[Chat API] Loaded metadata file '${metadataPath}', length: ${metadata.length}`);
       } catch {
-        console.log('[Chat API] Metadata file not found, continuing without it');
+        console.log(`[Chat API] Metadata file '${METADATA_FILE}' not found, continuing without it`);
       }
     } else {
       console.log('[Chat API] Metadata disabled by user');
@@ -908,10 +988,12 @@ export async function POST(request: NextRequest) {
       mcpClient = await createMcpClient();
       mcpTools = await getMcpTools(mcpClient);
       console.log(`[Chat API] Got ${mcpTools.length} tools from MCP server`);
+      await runDatabaseAccessPreflight(mcpClient, mcpTools);
+      console.log(`[Chat API] MCP preflight succeeded for database '${DEFAULT_DATABASE}'`);
     } catch (error) {
       console.error('[Chat API] Failed to connect to MCP server:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      return new Response(JSON.stringify({ error: `Failed to connect to MotherDuck: ${errorMessage}` }), {
+      return new Response(JSON.stringify({ error: `Failed to connect to MotherDuck or access database '${DEFAULT_DATABASE}': ${errorMessage}` }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });

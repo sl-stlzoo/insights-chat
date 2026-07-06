@@ -259,9 +259,10 @@ Generated: 2026-07-02T15:15:13.991-05:00
 > Current: deployment in progress (control-plane gates mostly cleared)
 
 1. Promote the same deployment workflow path to `prod` with the existing approval gate enabled.
-2. Validate `https://<aca-fqdn>/`, `https://<aca-fqdn>/docs`, and Entra sign-in behavior in `prod`.
-3. Finalize PostgreSQL business-hours automation and alert threshold tuning in production.
-4. Update plan status to `Deployed` after production validation is complete.
+2. Deploy the MotherDuck runtime-context update (env-driven database scope + metadata path) to `dev` and confirm `za_edw_pov` access through the chat API.
+3. Validate `https://<aca-fqdn>/`, `https://<aca-fqdn>/docs`, Entra sign-in behavior, and Dive/embed flow in `prod`.
+4. Finalize PostgreSQL business-hours automation and alert threshold tuning in production.
+5. Update plan status to `Deployed` after production validation is complete.
 
 ## 11. Deployment Gate Tracker (Live)
 
@@ -274,3 +275,4 @@ Generated: 2026-07-02T15:15:13.991-05:00
 | Dev workflow Azure login | ✅ Complete | `Azure login (OIDC)` step now passes in run `28811115950` |
 | Dev workflow image build | ✅ Complete | `build-and-push` succeeded in run `28811332456` (web + docs images pushed to ACR) |
 | Dev workflow deploy + endpoint verification | ✅ Complete | Workflow run `28817448396` deployed images tagged `b00f243`; active endpoint `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/` returns sign-in redirect (`307`) and docs endpoint `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/docs` returns styled content (`200`, CSS `text/css`) |
+| MotherDuck runtime context (`za_edw_pov`) wired through app + deploy path | ✅ Complete (code) / ⏳ Pending deploy | Chat API now reads `MOTHERDUCK_ALLOWED_DATABASES`, `MOTHERDUCK_DEFAULT_DATABASE`, and `MOTHERDUCK_METADATA_FILE`; prompts and metadata defaults no longer depend on Eastlake |

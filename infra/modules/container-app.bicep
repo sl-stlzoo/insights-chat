@@ -10,6 +10,9 @@ param keyVaultUri string
 param azureAdTenantId string
 param azureAdClientId string
 param motherDuckDiveServiceAccountUsername string
+param motherDuckAllowedDatabases string
+param motherDuckDefaultDatabase string
+param motherDuckMetadataFile string
 param tags object = {}
 
 param nextAuthSecretUri string
@@ -153,6 +156,18 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             {
               name: 'MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME'
               value: motherDuckDiveServiceAccountUsername
+            }
+            {
+              name: 'MOTHERDUCK_ALLOWED_DATABASES'
+              value: motherDuckAllowedDatabases
+            }
+            {
+              name: 'MOTHERDUCK_DEFAULT_DATABASE'
+              value: motherDuckDefaultDatabase
+            }
+            {
+              name: 'MOTHERDUCK_METADATA_FILE'
+              value: motherDuckMetadataFile
             }
             {
               name: 'POSTGRES_DATABASE_URL'

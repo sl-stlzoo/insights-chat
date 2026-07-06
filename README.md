@@ -141,6 +141,9 @@ Use GitHub OIDC federation (no long-lived Azure secret) with `azure/login`.
 - `APP_AZURE_AD_TENANT_ID`
 - `APP_AZURE_AD_CLIENT_ID`
 - `MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME`
+- `MOTHERDUCK_ALLOWED_DATABASES` (for example `za_edw_pov`)
+- `MOTHERDUCK_DEFAULT_DATABASE` (for example `za_edw_pov`)
+- `MOTHERDUCK_METADATA_FILE` (for example `metadata/za_edw_pov.md`)
 - `KV_SECRET_AZURE_AD_CLIENT_SECRET` (for example `azure-ad-client-secret`)
 - `KV_SECRET_NEXTAUTH_SECRET` (for example `nextauth-secret`)
 - `KV_SECRET_OPENAI_API_KEY` (for example `openai-api-key`)
@@ -183,6 +186,9 @@ Canonical references:
 | `APP_AZURE_AD_TENANT_ID` | App runtime Entra tenant ID | Entra app registration tenant | Runtime auth config (`AZURE_AD_TENANT_ID`) | Same as above |
 | `APP_AZURE_AD_CLIENT_ID` | App runtime Entra client ID | Entra app registration | Runtime auth config (`AZURE_AD_CLIENT_ID`) | Same as above |
 | `MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME` | MotherDuck service account user for Dive embed sessions | MotherDuck workspace/org setup | Runtime identity for Dive embed-session flow | Same as above |
+| `MOTHERDUCK_ALLOWED_DATABASES` | Comma-separated MotherDuck database allowlist | Data access policy for the environment (for example `za_edw_pov`) | API-side guardrail restricting SQL target databases | Same as above |
+| `MOTHERDUCK_DEFAULT_DATABASE` | Default MotherDuck database name | Primary runtime database selection (for example `za_edw_pov`) | Prompt context + MCP preflight verification target | Same as above |
+| `MOTHERDUCK_METADATA_FILE` | Runtime metadata file path in the web container | Repo-managed metadata path (for example `metadata/za_edw_pov.md`) | Injects business/schema context without hardcoded Eastlake defaults | Same as above |
 | `KV_SECRET_AZURE_AD_CLIENT_SECRET` | Key Vault secret name for Entra app secret | Key Vault naming convention | Maps deploy parameter to Key Vault secret | Same as above |
 | `KV_SECRET_NEXTAUTH_SECRET` | Key Vault secret name for NextAuth secret | Key Vault naming convention | Maps deploy parameter to Key Vault secret | Same as above |
 | `KV_SECRET_OPENAI_API_KEY` | Key Vault secret name for OpenAI key | Key Vault naming convention | Maps deploy parameter to Key Vault secret | Same as above |

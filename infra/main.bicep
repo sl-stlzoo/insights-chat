@@ -43,6 +43,15 @@ param motherDuckDiveAdminToken string
 @description('Dedicated MotherDuck service-account username used for embedded Dive sessions.')
 param motherDuckDiveServiceAccountUsername string
 
+@description('Comma-separated list of allowed MotherDuck databases for runtime SQL access controls.')
+param motherDuckAllowedDatabases string = 'za_edw_pov'
+
+@description('Default MotherDuck database used by prompts and MCP preflight checks.')
+param motherDuckDefaultDatabase string = 'za_edw_pov'
+
+@description('Relative path in the app container for optional metadata context.')
+param motherDuckMetadataFile string = 'metadata/za_edw_pov.md'
+
 @description('Administrator username for the Azure Database for PostgreSQL Flexible Server.')
 param postgresAdminUsername string = 'maudeadmin'
 
@@ -227,6 +236,9 @@ module containerApp './modules/container-app.bicep' = {
     azureAdTenantId: azureAdTenantId
     azureAdClientId: azureAdClientId
     motherDuckDiveServiceAccountUsername: motherDuckDiveServiceAccountUsername
+    motherDuckAllowedDatabases: motherDuckAllowedDatabases
+    motherDuckDefaultDatabase: motherDuckDefaultDatabase
+    motherDuckMetadataFile: motherDuckMetadataFile
     nextAuthSecretUri: nextAuthSecretResource.properties.secretUriWithVersion
     azureAdClientSecretUri: azureAdClientSecretResource.properties.secretUriWithVersion
     openAiApiKeyUri: openAiApiKeyResource.properties.secretUriWithVersion

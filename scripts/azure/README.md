@@ -143,6 +143,9 @@ Set these as GitHub Environment **Variables**:
 - `APP_AZURE_AD_TENANT_ID`
 - `APP_AZURE_AD_CLIENT_ID`
 - `MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME`
+- `MOTHERDUCK_ALLOWED_DATABASES`
+- `MOTHERDUCK_DEFAULT_DATABASE`
+- `MOTHERDUCK_METADATA_FILE`
 - `KV_SECRET_AZURE_AD_CLIENT_SECRET`
 - `KV_SECRET_NEXTAUTH_SECRET`
 - `KV_SECRET_OPENAI_API_KEY`
@@ -155,6 +158,7 @@ Where they come from:
 - Azure resource names/region from deployed infra plan and resources.
 - Entra IDs from app registration.
 - MotherDuck service account username from your MotherDuck workspace setup.
+- MotherDuck database scope variables from your environment-specific data access policy and metadata file location.
 - `KV_SECRET_*` values are Key Vault **secret names** (not secret values).
 
 For full field-by-field what/where/why/how guidance, use the root

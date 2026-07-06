@@ -63,6 +63,15 @@
     "motherDuckDiveServiceAccountUsername": {
       "value": "service-account-name"
     },
+    "motherDuckAllowedDatabases": {
+      "value": "za_edw_pov"
+    },
+    "motherDuckDefaultDatabase": {
+      "value": "za_edw_pov"
+    },
+    "motherDuckMetadataFile": {
+      "value": "metadata/za_edw_pov.md"
+    },
     "postgresAdminPassword": {
       "reference": {
         "keyVault": {

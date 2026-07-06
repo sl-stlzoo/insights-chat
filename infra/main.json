@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "5816456926922507649"
+      "templateHash": "14831597345891169445"
     }
   },
   "parameters": {
@@ -84,6 +84,27 @@
       "type": "string",
       "metadata": {
         "description": "Dedicated MotherDuck service-account username used for embedded Dive sessions."
+      }
+    },
+    "motherDuckAllowedDatabases": {
+      "type": "string",
+      "defaultValue": "za_edw_pov",
+      "metadata": {
+        "description": "Comma-separated list of allowed MotherDuck databases for runtime SQL access controls."
+      }
+    },
+    "motherDuckDefaultDatabase": {
+      "type": "string",
+      "defaultValue": "za_edw_pov",
+      "metadata": {
+        "description": "Default MotherDuck database used by prompts and MCP preflight checks."
+      }
+    },
+    "motherDuckMetadataFile": {
+      "type": "string",
+      "defaultValue": "metadata/za_edw_pov.md",
+      "metadata": {
+        "description": "Relative path in the app container for optional metadata context."
       }
     },
     "postgresAdminUsername": {
@@ -821,6 +842,15 @@
           "motherDuckDiveServiceAccountUsername": {
             "value": "[parameters('motherDuckDiveServiceAccountUsername')]"
           },
+          "motherDuckAllowedDatabases": {
+            "value": "[parameters('motherDuckAllowedDatabases')]"
+          },
+          "motherDuckDefaultDatabase": {
+            "value": "[parameters('motherDuckDefaultDatabase')]"
+          },
+          "motherDuckMetadataFile": {
+            "value": "[parameters('motherDuckMetadataFile')]"
+          },
           "nextAuthSecretUri": {
             "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'nextauth-secret'), '2023-07-01').secretUriWithVersion]"
           },
@@ -850,7 +880,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "9700545146216280976"
+              "templateHash": "17259939050855823880"
             }
           },
           "parameters": {
@@ -888,6 +918,15 @@
               "type": "string"
             },
             "motherDuckDiveServiceAccountUsername": {
+              "type": "string"
+            },
+            "motherDuckAllowedDatabases": {
+              "type": "string"
+            },
+            "motherDuckDefaultDatabase": {
+              "type": "string"
+            },
+            "motherDuckMetadataFile": {
               "type": "string"
             },
             "tags": {
@@ -1050,6 +1089,18 @@
                         {
                           "name": "MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME",
                           "value": "[parameters('motherDuckDiveServiceAccountUsername')]"
+                        },
+                        {
+                          "name": "MOTHERDUCK_ALLOWED_DATABASES",
+                          "value": "[parameters('motherDuckAllowedDatabases')]"
+                        },
+                        {
+                          "name": "MOTHERDUCK_DEFAULT_DATABASE",
+                          "value": "[parameters('motherDuckDefaultDatabase')]"
+                        },
+                        {
+                          "name": "MOTHERDUCK_METADATA_FILE",
+                          "value": "[parameters('motherDuckMetadataFile')]"
                         },
                         {
                           "name": "POSTGRES_DATABASE_URL",
