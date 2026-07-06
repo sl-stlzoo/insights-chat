@@ -218,6 +218,7 @@ module containerApp './modules/container-app.bicep' = {
     location: location
     containerAppName: containerAppName
     managedEnvironmentId: managedEnvironment.outputs.id
+    containerRegistryServer: containerRegistry.outputs.loginServer
     webContainerImage: webContainerImage
     docsContainerImage: docsContainerImage
     publicAppUrl: publicAppUrl

@@ -1,6 +1,7 @@
 param location string
 param containerAppName string
 param managedEnvironmentId string
+param containerRegistryServer string
 param webContainerImage string
 param docsContainerImage string
 param publicAppUrl string
@@ -29,6 +30,12 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
     environmentId: managedEnvironmentId
     configuration: {
       activeRevisionsMode: 'single'
+      registries: [
+        {
+          server: containerRegistryServer
+          identity: 'system'
+        }
+      ]
       ingress: {
         external: true
         targetPort: 3000

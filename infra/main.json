@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "13718586366349533468"
+      "templateHash": "5816456926922507649"
     }
   },
   "parameters": {
@@ -794,6 +794,9 @@
           "managedEnvironmentId": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'managedEnvironment'), '2025-04-01').outputs.id.value]"
           },
+          "containerRegistryServer": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', 'containerRegistry'), '2025-04-01').outputs.loginServer.value]"
+          },
           "webContainerImage": {
             "value": "[parameters('webContainerImage')]"
           },
@@ -847,7 +850,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "3760672077687496861"
+              "templateHash": "9700545146216280976"
             }
           },
           "parameters": {
@@ -858,6 +861,9 @@
               "type": "string"
             },
             "managedEnvironmentId": {
+              "type": "string"
+            },
+            "containerRegistryServer": {
               "type": "string"
             },
             "webContainerImage": {
@@ -921,6 +927,12 @@
                 "environmentId": "[parameters('managedEnvironmentId')]",
                 "configuration": {
                   "activeRevisionsMode": "single",
+                  "registries": [
+                    {
+                      "server": "[parameters('containerRegistryServer')]",
+                      "identity": "system"
+                    }
+                  ],
                   "ingress": {
                     "external": true,
                     "targetPort": 3000,
@@ -1114,6 +1126,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'azure-ad-client-secret')]",
+        "[resourceId('Microsoft.Resources/deployments', 'containerRegistry')]",
         "[resourceId('Microsoft.Resources/deployments', 'keyVault')]",
         "[resourceId('Microsoft.Resources/deployments', 'managedEnvironment')]",
         "[resourceId('Microsoft.Resources/deployments', 'monitoring')]",
