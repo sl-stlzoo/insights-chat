@@ -1,0 +1,50 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.16",
+  "id": "${TEAMS_PILOT_APP_ID}",
+  "version": "1.2.0",
+  "packageName": "com.enterprise.maude.analytics.pilot",
+  "developer": {
+    "name": "Enterprise Analytics",
+    "websiteUrl": "https://${TEAMS_PILOT_APP_DOMAIN}",
+    "privacyUrl": "https://${TEAMS_PILOT_APP_DOMAIN}/docs",
+    "termsOfUseUrl": "https://${TEAMS_PILOT_APP_DOMAIN}/docs"
+  },
+  "name": {
+    "short": "Maude Pilot",
+    "full": "Maude Analytics Assistant (Pilot)"
+  },
+  "description": {
+    "short": "Secure MotherDuck analytics assistant (pilot).",
+    "full": "Pilot Teams package for stakeholder validation of tab-first analytics with Entra SSO and OBO."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "accentColor": "#005589",
+  "defaultInstallScope": "personal",
+  "staticTabs": [
+    {
+      "entityId": "maudeDiveViewerTab",
+      "name": "Data Explorer Workspace",
+      "contentUrl": "https://${TEAMS_PILOT_APP_DOMAIN}/tab/explorer",
+      "websiteUrl": "https://${TEAMS_PILOT_APP_DOMAIN}/tab/explorer",
+      "scopes": ["personal"]
+    }
+  ],
+  "bots": [
+    {
+      "botId": "${TEAMS_PILOT_BOT_ID}",
+      "scopes": ["personal", "team"],
+      "supportsFiles": false,
+      "isNotificationOnly": false
+    }
+  ],
+  "permissions": ["identity"],
+  "validDomains": ["${TEAMS_PILOT_APP_DOMAIN}"],
+  "webApplicationInfo": {
+    "id": "${TEAMS_PILOT_TAB_AAD_APP_ID}",
+    "resource": "${TEAMS_PILOT_API_APPLICATION_ID_URI}"
+  }
+}
