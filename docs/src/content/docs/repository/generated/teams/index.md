@@ -41,6 +41,8 @@ delivery model described in the updated PRD.
 - `TEAMS_SSO_ALLOWED_AUDIENCES` constrains accepted incoming Teams SSO token
   audiences.
 - `TEAMS_OBO_SCOPES` limits downstream delegated scopes to a least-privilege set.
+- `TEAMS_ALLOWED_ROLES` and `TEAMS_ALLOWED_GROUPS` enforce optional app-role/group
+  checks on Teams tab and API entry points.
 
 All of the above are wired through:
 
@@ -63,6 +65,11 @@ The detailed rollout sequence lives in:
 - `manifest.pilot.json`
 - `manifest.prod.json`
 - `validate-manifests.mjs` (hardening gate for schema/security checks)
+
+## Stage 3 review-path artifact
+
+- `/api/teams/review-path` returns a signed tab deep-link and Adaptive Card payload
+  so bot/card flows can hand users into `/tab/explorer` with preserved Dive context.
 
 Environment manifests expect environment-specific placeholder values:
 

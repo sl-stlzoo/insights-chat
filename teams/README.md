@@ -59,6 +59,11 @@ The detailed rollout sequence lives in:
 - `manifest.prod.json`
 - `validate-manifests.mjs` (hardening gate for schema/security checks)
 
+## Stage 3 review-path artifact
+
+- `/api/teams/review-path` returns a signed tab deep-link and Adaptive Card payload
+  so bot/card flows can hand users into `/tab/explorer` with preserved Dive context.
+
 Environment manifests expect environment-specific placeholder values:
 
 - `TEAMS_<ENV>_APP_ID`

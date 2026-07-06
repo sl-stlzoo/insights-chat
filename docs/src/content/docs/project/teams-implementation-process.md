@@ -79,6 +79,9 @@ with least-privilege access controls.
 - **Stage 2:** Complete (`app/api/teams/sso/obo/route.ts`,
   `lib/teams-obo.ts`, `app/tab/explorer/TeamsSsoBootstrap.tsx`,
   `teams/manifest.{dev,pilot,prod}.json`, and `npm run teams:validate`).
+- **Stage 3:** In progress (`/tab/explorer` auth-gate UX, app-role/group checks
+  on Teams tab/API entry points, and bot/card review-path deep-link generation
+  via `app/api/teams/review-path/route.ts`).
 
 ## Gate discipline
 
