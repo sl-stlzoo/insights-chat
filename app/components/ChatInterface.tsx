@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Avatar, Spinner } from '@fluentui/react-components';
 import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Sparkline, { parseSparklineData } from './Sparkline';
@@ -1780,6 +1781,8 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
     if (!hasMessageContent(msg)) return null;
 
     const ContentWrapper = msg.role === 'assistant' ? MaxWidthContainer : 'div';
+    const avatarLabel = msg.role === 'assistant' ? 'zd assistant' : 'Signed-in user';
+    const avatarName = msg.role === 'assistant' ? 'zd' : 'You';
 
     const hasHtml = typeof msg.content !== 'string' && msg.content.some(block =>
       (block.type === 'html' && block.html) ||
@@ -1793,6 +1796,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
 
     return (
       <div key={`${keyPrefix}-${idx}`} className={`chat-message chat-message-${msg.role}${hasHtml ? ' has-html' : ''}`}>
+        <Avatar className="chat-message-avatar" name={avatarName} aria-label={avatarLabel} color={msg.role === 'assistant' ? 'brand' : 'colorful'} size={28} />
         <ContentWrapper className="chat-message-content">
           {typeof msg.content === 'string' ? (
             msg.role === 'assistant' ? (
@@ -1983,7 +1987,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
                 {(headToHeadMessages[model.id] || []).map((msg, idx) => renderMessage(msg, idx, model.id))}
                 {headToHeadLoading[model.id] && (
                   <div className="chat-loading-indicator">
-                    <span className="chat-loading-dot" />
+                    <Avatar className="chat-process-avatar" name={headToHeadToolRunning[model.id] ? 'Data query in progress' : 'Assistant is thinking'} icon={<Spinner size="tiny" />} color="brand" size={24} />
                     <span className="chat-loading-text">
                       {headToHeadToolRunning[model.id] ? 'Querying data' : 'Thinking'}
                     </span>
@@ -1998,7 +2002,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
             {messages.map((msg, idx) => renderMessage(msg, idx, 'msg'))}
             {isLoading && (
               <div className="chat-loading-indicator">
-                <span className="chat-loading-dot" />
+                <Avatar className="chat-process-avatar" name={isToolRunning ? 'Data query in progress' : 'Assistant is thinking'} icon={<Spinner size="tiny" />} color="brand" size={24} />
                 <span className="chat-loading-text">
                   {isToolRunning ? 'Querying data' : 'Thinking'}
                 </span>

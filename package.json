@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@azure/identity": "^4.11.1",
+    "@fluentui/react-components": "^9.74.3",
     "@modelcontextprotocol/sdk": "^1.25.1",
     "@types/leaflet": "^1.9.21",
     "leaflet": "^1.9.4",
