@@ -6,7 +6,7 @@ type TeamsSsoState = 'booting' | 'ready' | 'error' | 'skipped';
 
 interface TeamsSsoExchangeResponse {
   error?: string;
-  accessToken?: string;
+  exchanged?: boolean;
 }
 
 export default function TeamsSsoBootstrap() {
@@ -40,8 +40,8 @@ export default function TeamsSsoBootstrap() {
         });
         const payload = (await response.json()) as TeamsSsoExchangeResponse;
 
-        if (!response.ok || !payload.accessToken) {
-          throw new Error(payload.error || 'Teams OBO exchange did not return an access token.');
+        if (!response.ok || !payload.exchanged) {
+          throw new Error(payload.error || 'Teams OBO exchange was not completed.');
         }
 
         if (!disposed) {

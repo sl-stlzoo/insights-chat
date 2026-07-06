@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       tokenType: oboToken.tokenType,
       expiresIn: oboToken.expiresIn,
       scope: oboToken.scope,
-      accessToken: oboToken.accessToken,
+      exchanged: true,
     });
   } catch (error) {
     if (error instanceof TeamsOboError) {
