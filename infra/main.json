@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "11086591993064522270"
+      "templateHash": "6324812663064667469"
     }
   },
   "parameters": {
@@ -161,6 +161,13 @@
       "defaultValue": "metadata/za_edw_pov.md",
       "metadata": {
         "description": "Relative path in the app container for optional metadata context."
+      }
+    },
+    "motherDuckContextAudience": {
+      "type": "string",
+      "defaultValue": "Saint Louis Zoo business stakeholders",
+      "metadata": {
+        "description": "Business audience label injected into dynamic standalone prompt instructions."
       }
     },
     "postgresAdminUsername": {
@@ -940,6 +947,9 @@
           "motherDuckMetadataFile": {
             "value": "[parameters('motherDuckMetadataFile')]"
           },
+          "motherDuckContextAudience": {
+            "value": "[parameters('motherDuckContextAudience')]"
+          },
           "nextAuthSecretUri": {
             "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'nextauth-secret'), '2023-07-01').secretUriWithVersion]"
           },
@@ -972,7 +982,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "10831679297954856764"
+              "templateHash": "15460872413209651685"
             }
           },
           "parameters": {
@@ -1047,6 +1057,9 @@
               "type": "string"
             },
             "motherDuckMetadataFile": {
+              "type": "string"
+            },
+            "motherDuckContextAudience": {
               "type": "string"
             },
             "tags": {
@@ -1261,6 +1274,10 @@
                         {
                           "name": "MOTHERDUCK_METADATA_FILE",
                           "value": "[parameters('motherDuckMetadataFile')]"
+                        },
+                        {
+                          "name": "MOTHERDUCK_CONTEXT_AUDIENCE",
+                          "value": "[parameters('motherDuckContextAudience')]"
                         },
                         {
                           "name": "POSTGRES_DATABASE_URL",

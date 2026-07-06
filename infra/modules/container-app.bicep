@@ -20,6 +20,7 @@ param motherDuckDiveServiceAccountUsername string
 param motherDuckAllowedDatabases string
 param motherDuckDefaultDatabase string
 param motherDuckMetadataFile string
+param motherDuckContextAudience string
 param tags object = {}
 
 param nextAuthSecretUri string
@@ -213,6 +214,10 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             {
               name: 'MOTHERDUCK_METADATA_FILE'
               value: motherDuckMetadataFile
+            }
+            {
+              name: 'MOTHERDUCK_CONTEXT_AUDIENCE'
+              value: motherDuckContextAudience
             }
             {
               name: 'POSTGRES_DATABASE_URL'

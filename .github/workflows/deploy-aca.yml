@@ -51,6 +51,7 @@ env:
   MOTHERDUCK_ALLOWED_DATABASES: ${{ vars.MOTHERDUCK_ALLOWED_DATABASES || 'za_edw_pov' }}
   MOTHERDUCK_DEFAULT_DATABASE: ${{ vars.MOTHERDUCK_DEFAULT_DATABASE || 'za_edw_pov' }}
   MOTHERDUCK_METADATA_FILE: ${{ vars.MOTHERDUCK_METADATA_FILE || 'metadata/za_edw_pov.md' }}
+  MOTHERDUCK_CONTEXT_AUDIENCE: ${{ vars.MOTHERDUCK_CONTEXT_AUDIENCE || 'Saint Louis Zoo business stakeholders' }}
   KV_SECRET_AZURE_AD_CLIENT_SECRET: ${{ vars.KV_SECRET_AZURE_AD_CLIENT_SECRET }}
   KV_SECRET_NEXTAUTH_SECRET: ${{ vars.KV_SECRET_NEXTAUTH_SECRET }}
   KV_SECRET_OPENAI_API_KEY: ${{ vars.KV_SECRET_OPENAI_API_KEY }}
@@ -159,6 +160,7 @@ jobs:
             "motherDuckAllowedDatabases": { "value": "${MOTHERDUCK_ALLOWED_DATABASES}" },
             "motherDuckDefaultDatabase": { "value": "${MOTHERDUCK_DEFAULT_DATABASE}" },
             "motherDuckMetadataFile": { "value": "${MOTHERDUCK_METADATA_FILE}" },
+            "motherDuckContextAudience": { "value": "${MOTHERDUCK_CONTEXT_AUDIENCE}" },
             "postgresAdminPassword": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_POSTGRES_ADMIN_PASSWORD}" } },
             "webContainerImage": { "value": "${{ needs.build-and-push.outputs.web_image }}" },
             "docsContainerImage": { "value": "${{ needs.build-and-push.outputs.docs_image }}" }

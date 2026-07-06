@@ -589,6 +589,8 @@ function parseAllowedDatabases(rawValue: string | undefined): string[] {
 const ALLOWED_DATABASES = parseAllowedDatabases(process.env.MOTHERDUCK_ALLOWED_DATABASES);
 const DEFAULT_DATABASE = process.env.MOTHERDUCK_DEFAULT_DATABASE?.trim() || ALLOWED_DATABASES[0] || '';
 const METADATA_FILE = process.env.MOTHERDUCK_METADATA_FILE?.trim() || DEFAULT_METADATA_FILE;
+const DEFAULT_CONTEXT_AUDIENCE = 'business stakeholders';
+const CONTEXT_AUDIENCE = process.env.MOTHERDUCK_CONTEXT_AUDIENCE?.trim() || DEFAULT_CONTEXT_AUDIENCE;
 
 function resolveMetadataFilePath(metadataFile: string): string {
   return isAbsolute(metadataFile) ? metadataFile : join(process.cwd(), metadataFile);
@@ -1378,6 +1380,9 @@ export async function POST(request: NextRequest) {
               const wrappedMessage = composePrompt(standaloneTemplate, {
                 'USER_QUESTION': originalQuestion,
                 'CONVERSATION_CONTEXT': conversationContext,
+                'ALLOWED_DATABASES': ALLOWED_DATABASES.join(', '),
+                'DEFAULT_DATABASE': DEFAULT_DATABASE,
+                'CONTEXT_AUDIENCE': CONTEXT_AUDIENCE,
               });
 
               chatMessages[lastUserIndex] = {
