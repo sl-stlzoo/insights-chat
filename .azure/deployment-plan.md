@@ -273,4 +273,4 @@ Generated: 2026-07-02T15:15:13.991-05:00
 | RBAC for deploy identity | ✅ Complete | Reader at subscription, Contributor + User Access Administrator at `rg-maude-dev`, and AcrPush at `maudedevacr` |
 | Dev workflow Azure login | ✅ Complete | `Azure login (OIDC)` step now passes in run `28811115950` |
 | Dev workflow image build | ✅ Complete | `build-and-push` succeeded in run `28811332456` (web + docs images pushed to ACR) |
-| Dev workflow deploy + endpoint verification | ✅ Complete | Workflow run `28814433100` completed successfully; active revision `maude-dev-web--0000009` serves `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/` (`307`) and `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/docs` (`200`) |
+| Dev workflow deploy + endpoint verification | ✅ Complete | Workflow run `28817448396` deployed images tagged `b00f243`; active endpoint `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/` returns sign-in redirect (`307`) and docs endpoint `https://maude-dev-web.politepebble-b977aedc.eastus2.azurecontainerapps.io/docs` returns styled content (`200`, CSS `text/css`) |
