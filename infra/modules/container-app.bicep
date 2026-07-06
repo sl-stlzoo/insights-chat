@@ -9,6 +9,13 @@ param applicationInsightsConnectionString string
 param keyVaultUri string
 param azureAdTenantId string
 param azureAdClientId string
+param teamsAppId string = ''
+param teamsBotId string = ''
+param teamsTabAadAppId string = ''
+param teamsApiApplicationIdUri string = ''
+param teamsOboClientId string = ''
+param teamsOboScopes string = 'User.Read'
+param teamsSsoAllowedAudiences string = ''
 param motherDuckDiveServiceAccountUsername string
 param motherDuckAllowedDatabases string
 param motherDuckDefaultDatabase string
@@ -20,6 +27,7 @@ param azureAdClientSecretUri string
 param openAiApiKeyUri string
 param motherDuckTokenUri string
 param motherDuckDiveAdminTokenUri string
+param teamsOboClientSecretUri string
 param postgresConnectionStringUri string
 
 resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
@@ -69,6 +77,11 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
           name: 'motherduck-dive-admin-token'
           identity: 'system'
           keyVaultUrl: motherDuckDiveAdminTokenUri
+        }
+        {
+          name: 'teams-obo-client-secret'
+          identity: 'system'
+          keyVaultUrl: teamsOboClientSecretUri
         }
         {
           name: 'postgres-connection-string'
@@ -140,6 +153,38 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             {
               name: 'AZURE_AD_CLIENT_SECRET'
               secretRef: 'azure-ad-client-secret'
+            }
+            {
+              name: 'TEAMS_APP_ID'
+              value: teamsAppId
+            }
+            {
+              name: 'TEAMS_BOT_ID'
+              value: teamsBotId
+            }
+            {
+              name: 'TEAMS_TAB_AAD_APP_ID'
+              value: teamsTabAadAppId
+            }
+            {
+              name: 'TEAMS_API_APPLICATION_ID_URI'
+              value: teamsApiApplicationIdUri
+            }
+            {
+              name: 'TEAMS_OBO_CLIENT_ID'
+              value: teamsOboClientId
+            }
+            {
+              name: 'TEAMS_OBO_CLIENT_SECRET'
+              secretRef: 'teams-obo-client-secret'
+            }
+            {
+              name: 'TEAMS_OBO_SCOPES'
+              value: teamsOboScopes
+            }
+            {
+              name: 'TEAMS_SSO_ALLOWED_AUDIENCES'
+              value: teamsSsoAllowedAudiences
             }
             {
               name: 'OPENAI_API_KEY'

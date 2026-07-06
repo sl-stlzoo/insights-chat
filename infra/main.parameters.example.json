@@ -20,6 +20,35 @@
     "azureAdClientId": {
       "value": "00000000-0000-0000-0000-000000000000"
     },
+    "teamsAppId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "teamsBotId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "teamsTabAadAppId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "teamsApiApplicationIdUri": {
+      "value": "api://your-container-app.azurecontainerapps.io/00000000-0000-0000-0000-000000000000"
+    },
+    "teamsOboClientId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "teamsOboClientSecret": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/<subId>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vaultName>"
+        },
+        "secretName": "teams-obo-client-secret"
+      }
+    },
+    "teamsOboScopes": {
+      "value": "User.Read"
+    },
+    "teamsSsoAllowedAudiences": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
     "azureAdClientSecret": {
       "reference": {
         "keyVault": {

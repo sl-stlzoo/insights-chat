@@ -40,6 +40,13 @@ env:
   PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
   APP_AZURE_AD_TENANT_ID: ${{ vars.APP_AZURE_AD_TENANT_ID }}
   APP_AZURE_AD_CLIENT_ID: ${{ vars.APP_AZURE_AD_CLIENT_ID }}
+  TEAMS_APP_ID: ${{ vars.TEAMS_APP_ID || '' }}
+  TEAMS_BOT_ID: ${{ vars.TEAMS_BOT_ID || '' }}
+  TEAMS_TAB_AAD_APP_ID: ${{ vars.TEAMS_TAB_AAD_APP_ID || vars.APP_AZURE_AD_CLIENT_ID || '' }}
+  TEAMS_API_APPLICATION_ID_URI: ${{ vars.TEAMS_API_APPLICATION_ID_URI || '' }}
+  TEAMS_OBO_CLIENT_ID: ${{ vars.TEAMS_OBO_CLIENT_ID || vars.APP_AZURE_AD_CLIENT_ID || '' }}
+  TEAMS_OBO_SCOPES: ${{ vars.TEAMS_OBO_SCOPES || 'User.Read' }}
+  TEAMS_SSO_ALLOWED_AUDIENCES: ${{ vars.TEAMS_SSO_ALLOWED_AUDIENCES || '' }}
   MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME: ${{ vars.MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME }}
   MOTHERDUCK_ALLOWED_DATABASES: ${{ vars.MOTHERDUCK_ALLOWED_DATABASES || 'za_edw_pov' }}
   MOTHERDUCK_DEFAULT_DATABASE: ${{ vars.MOTHERDUCK_DEFAULT_DATABASE || 'za_edw_pov' }}
@@ -49,6 +56,7 @@ env:
   KV_SECRET_OPENAI_API_KEY: ${{ vars.KV_SECRET_OPENAI_API_KEY }}
   KV_SECRET_MOTHERDUCK_TOKEN: ${{ vars.KV_SECRET_MOTHERDUCK_TOKEN }}
   KV_SECRET_MOTHERDUCK_DIVE_ADMIN_TOKEN: ${{ vars.KV_SECRET_MOTHERDUCK_DIVE_ADMIN_TOKEN }}
+  KV_SECRET_TEAMS_OBO_CLIENT_SECRET: ${{ vars.KV_SECRET_TEAMS_OBO_CLIENT_SECRET || vars.KV_SECRET_AZURE_AD_CLIENT_SECRET }}
   KV_SECRET_POSTGRES_ADMIN_PASSWORD: ${{ vars.KV_SECRET_POSTGRES_ADMIN_PASSWORD }}
 
 jobs:
@@ -134,6 +142,14 @@ jobs:
             "publicAppUrl": { "value": "${PUBLIC_APP_URL}" },
             "azureAdTenantId": { "value": "${APP_AZURE_AD_TENANT_ID}" },
             "azureAdClientId": { "value": "${APP_AZURE_AD_CLIENT_ID}" },
+            "teamsAppId": { "value": "${TEAMS_APP_ID}" },
+            "teamsBotId": { "value": "${TEAMS_BOT_ID}" },
+            "teamsTabAadAppId": { "value": "${TEAMS_TAB_AAD_APP_ID}" },
+            "teamsApiApplicationIdUri": { "value": "${TEAMS_API_APPLICATION_ID_URI}" },
+            "teamsOboClientId": { "value": "${TEAMS_OBO_CLIENT_ID}" },
+            "teamsOboScopes": { "value": "${TEAMS_OBO_SCOPES}" },
+            "teamsSsoAllowedAudiences": { "value": "${TEAMS_SSO_ALLOWED_AUDIENCES}" },
+            "teamsOboClientSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_TEAMS_OBO_CLIENT_SECRET}" } },
             "azureAdClientSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_AZURE_AD_CLIENT_SECRET}" } },
             "nextAuthSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_NEXTAUTH_SECRET}" } },
             "openAiApiKey": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_OPENAI_API_KEY}" } },

@@ -140,6 +140,13 @@ Use GitHub OIDC federation (no long-lived Azure secret) with `azure/login`.
 - `PUBLIC_APP_URL`
 - `APP_AZURE_AD_TENANT_ID`
 - `APP_AZURE_AD_CLIENT_ID`
+- `TEAMS_APP_ID` (optional until Teams package promotion)
+- `TEAMS_BOT_ID` (optional until bot rollout)
+- `TEAMS_TAB_AAD_APP_ID` (defaults to `APP_AZURE_AD_CLIENT_ID` if omitted)
+- `TEAMS_API_APPLICATION_ID_URI` (optional runtime override)
+- `TEAMS_OBO_CLIENT_ID` (defaults to `APP_AZURE_AD_CLIENT_ID` if omitted)
+- `TEAMS_OBO_SCOPES` (for example `User.Read`)
+- `TEAMS_SSO_ALLOWED_AUDIENCES` (comma-separated app ID allowlist)
 - `MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME`
 - `MOTHERDUCK_ALLOWED_DATABASES` (for example `za_edw_pov`)
 - `MOTHERDUCK_DEFAULT_DATABASE` (for example `za_edw_pov`)
@@ -149,6 +156,7 @@ Use GitHub OIDC federation (no long-lived Azure secret) with `azure/login`.
 - `KV_SECRET_OPENAI_API_KEY` (for example `openai-api-key`)
 - `KV_SECRET_MOTHERDUCK_TOKEN` (for example `motherduck-token`)
 - `KV_SECRET_MOTHERDUCK_DIVE_ADMIN_TOKEN` (for example `motherduck-dive-admin-token`)
+- `KV_SECRET_TEAMS_OBO_CLIENT_SECRET` (optional; defaults to `KV_SECRET_AZURE_AD_CLIENT_SECRET`)
 - `KV_SECRET_POSTGRES_ADMIN_PASSWORD` (for example `postgres-admin-password`)
 
 ### GitHub Environment config guide (what, where, why, how)
@@ -185,6 +193,13 @@ Canonical references:
 | `PUBLIC_APP_URL` | Canonical HTTPS app URL | Actual ingress host / custom domain | Required for auth callback URL wiring | Same as above |
 | `APP_AZURE_AD_TENANT_ID` | App runtime Entra tenant ID | Entra app registration tenant | Runtime auth config (`AZURE_AD_TENANT_ID`) | Same as above |
 | `APP_AZURE_AD_CLIENT_ID` | App runtime Entra client ID | Entra app registration | Runtime auth config (`AZURE_AD_CLIENT_ID`) | Same as above |
+| `TEAMS_APP_ID` | Teams app package ID | Teams Developer Portal app entry | Runtime + manifest identity wiring | Same as above |
+| `TEAMS_BOT_ID` | Teams bot app ID | Bot app registration | Manifest `bots[].botId` contract | Same as above |
+| `TEAMS_TAB_AAD_APP_ID` | Teams tab SSO app ID | Entra app registration for Teams tab SSO | Manifest `webApplicationInfo.id` and runtime audience checks | Same as above |
+| `TEAMS_API_APPLICATION_ID_URI` | Teams API Application ID URI | Entra "Expose an API" app ID URI | Runtime OBO resource targeting and manifest `webApplicationInfo.resource` | Same as above |
+| `TEAMS_OBO_CLIENT_ID` | Confidential app ID for OBO exchange | Entra app registration used by backend | Runtime OBO client identity | Same as above |
+| `TEAMS_OBO_SCOPES` | Space-separated delegated scopes | Downstream API least-privilege design (`User.Read`, custom scopes, etc.) | Constrains OBO token exchange privileges | Same as above |
+| `TEAMS_SSO_ALLOWED_AUDIENCES` | Comma-separated accepted SSO token audiences | Teams tab/app IDs for the environment | Prevents accepting tokens minted for unrelated audiences | Same as above |
 | `MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME` | MotherDuck service account user for Dive embed sessions | MotherDuck workspace/org setup | Runtime identity for Dive embed-session flow | Same as above |
 | `MOTHERDUCK_ALLOWED_DATABASES` | Comma-separated MotherDuck database allowlist | Data access policy for the environment (for example `za_edw_pov`) | API-side guardrail restricting SQL target databases | Same as above |
 | `MOTHERDUCK_DEFAULT_DATABASE` | Default MotherDuck database name | Primary runtime database selection (for example `za_edw_pov`) | Prompt context + MCP preflight verification target | Same as above |
@@ -194,6 +209,7 @@ Canonical references:
 | `KV_SECRET_OPENAI_API_KEY` | Key Vault secret name for OpenAI key | Key Vault naming convention | Maps deploy parameter to Key Vault secret | Same as above |
 | `KV_SECRET_MOTHERDUCK_TOKEN` | Key Vault secret name for MotherDuck token | Key Vault naming convention | Maps deploy parameter to Key Vault secret | Same as above |
 | `KV_SECRET_MOTHERDUCK_DIVE_ADMIN_TOKEN` | Key Vault secret name for MotherDuck Dive admin token | Key Vault naming convention | Maps deploy parameter to Key Vault secret | Same as above |
+| `KV_SECRET_TEAMS_OBO_CLIENT_SECRET` | Key Vault secret name for Teams OBO confidential-client secret | Key Vault naming convention (or reuse Entra web app secret) | Maps deploy parameter to Key Vault secret for backend OBO exchange | Same as above |
 | `KV_SECRET_POSTGRES_ADMIN_PASSWORD` | Key Vault secret name for PostgreSQL admin password | Key Vault naming convention | Maps deploy parameter to Key Vault secret | Same as above |
 
 Operational references:

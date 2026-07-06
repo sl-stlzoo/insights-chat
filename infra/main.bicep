@@ -24,6 +24,31 @@ param azureAdClientId string
 @description('Microsoft Entra client secret for the web app registration.')
 param azureAdClientSecret string
 
+@description('Teams app package ID for the environment.')
+param teamsAppId string = ''
+
+@description('Teams bot app ID for the environment.')
+param teamsBotId string = ''
+
+@description('Teams tab SSO app ID used by webApplicationInfo.id.')
+param teamsTabAadAppId string = ''
+
+@description('API application ID URI used for Teams SSO/OBO. Leave blank to resolve at runtime.')
+param teamsApiApplicationIdUri string = ''
+
+@description('Confidential app client ID used for Teams OBO flow. Leave blank to reuse azureAdClientId.')
+param teamsOboClientId string = ''
+
+@secure()
+@description('Confidential app client secret used for Teams OBO flow. Leave blank to reuse azureAdClientSecret.')
+param teamsOboClientSecret string = ''
+
+@description('Space-delimited least-privilege downstream scopes for Teams OBO.')
+param teamsOboScopes string = 'User.Read'
+
+@description('Comma-delimited allowlist of accepted Teams SSO token audiences.')
+param teamsSsoAllowedAudiences string = ''
+
 @secure()
 @description('Random secret used by NextAuth to sign session cookies.')
 param nextAuthSecret string
@@ -153,6 +178,7 @@ resource keyVaultResource 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 var postgresConnectionString = 'postgresql://${postgresAdminUsername}:${postgresAdminPassword}@${postgres.outputs.serverFqdn}:5432/${postgres.outputs.databaseName}?sslmode=require'
+var resolvedTeamsOboClientSecret = empty(teamsOboClientSecret) ? azureAdClientSecret : teamsOboClientSecret
 
 resource nextAuthSecretResource 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   name: 'nextauth-secret'
@@ -209,6 +235,17 @@ resource motherDuckDiveAdminTokenResource 'Microsoft.KeyVault/vaults/secrets@202
   }
 }
 
+resource teamsOboClientSecretResource 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  name: 'teams-obo-client-secret'
+  parent: keyVaultResource
+  dependsOn: [
+    keyVault
+  ]
+  properties: {
+    value: resolvedTeamsOboClientSecret
+  }
+}
+
 resource postgresConnectionStringResource 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   name: 'postgres-connection-string'
   parent: keyVaultResource
@@ -235,6 +272,13 @@ module containerApp './modules/container-app.bicep' = {
     keyVaultUri: keyVault.outputs.vaultUri
     azureAdTenantId: azureAdTenantId
     azureAdClientId: azureAdClientId
+    teamsAppId: teamsAppId
+    teamsBotId: teamsBotId
+    teamsTabAadAppId: teamsTabAadAppId
+    teamsApiApplicationIdUri: teamsApiApplicationIdUri
+    teamsOboClientId: teamsOboClientId
+    teamsOboScopes: teamsOboScopes
+    teamsSsoAllowedAudiences: teamsSsoAllowedAudiences
     motherDuckDiveServiceAccountUsername: motherDuckDiveServiceAccountUsername
     motherDuckAllowedDatabases: motherDuckAllowedDatabases
     motherDuckDefaultDatabase: motherDuckDefaultDatabase
@@ -244,6 +288,7 @@ module containerApp './modules/container-app.bicep' = {
     openAiApiKeyUri: openAiApiKeyResource.properties.secretUriWithVersion
     motherDuckTokenUri: motherDuckTokenResource.properties.secretUriWithVersion
     motherDuckDiveAdminTokenUri: motherDuckDiveAdminTokenResource.properties.secretUriWithVersion
+    teamsOboClientSecretUri: teamsOboClientSecretResource.properties.secretUriWithVersion
     postgresConnectionStringUri: postgresConnectionStringResource.properties.secretUriWithVersion
     tags: tags
   }
