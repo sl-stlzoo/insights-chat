@@ -9,7 +9,7 @@ export default defineConfig({
 	integrations: [
 		react(),
 		starlight({
-			title: 'Maude Delivery Docs',
+			title: 'Zoo Data Delivery Docs',
 			description: 'Architecture, deployment, ADRs, phase tracking, and repository guides for the Azure Container Apps modernization.',
 			components: {
 				Search: './src/components/Search.astro',

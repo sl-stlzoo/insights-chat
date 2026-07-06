@@ -533,7 +533,7 @@ const WELCOME_PROMPTS = [
 ];
 
 const MODEL_OPTIONS = [
-  { id: 'fast', name: 'OpenAI Fast', model: 'gpt-4.1-mini', appName: 'Mash', subtitle: 'fast OpenAI analysis' },
+  { id: 'fast', name: 'OpenAI Fast', model: 'gpt-4.1-mini', appName: 'Zoo Data', subtitle: 'fast OpenAI analysis' },
   { id: 'pro', name: 'OpenAI Pro', model: 'gpt-4.1', appName: 'zd', subtitle: 'strong OpenAI reasoning' },
   { id: 'blended', name: 'Blended (Fast + Pro)', model: 'blended', appName: 'Quacker', subtitle: 'two-step live analysis' },
   { id: 'head-to-head', name: 'Head-to-Head', model: 'head-to-head', appName: 'All the Quackers', subtitle: 'Compare all models' },
@@ -1911,7 +1911,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
             <div className="chat-title">
               <span key={selectedModel} className="chat-title-animated">{currentModelConfig.appName}</span>
             </div>
-            <div className="chat-subtitle">Animals Always. zd (pronounced zed) helps you ask questions of Saint Louis Zoo business data in MotherDuck using a {currentModelConfig.subtitle} interface.</div>
+            <div className="chat-subtitle">Zd lets you ask questions about Saint Louis Zoo business data - try it out!</div>
           </div>
         </div>
         <div className="chat-header-right">
@@ -1936,8 +1936,8 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
       <div className="chat-messages" ref={messagesContainerRef}>
         {!hasConversation ? (
           <div className="chat-welcome">
-            <h2><span className="welcome-full">Welcome to {currentModelConfig.appName}</span><span className="welcome-short">Welcome</span></h2>
-            <p>This Saint Louis Zoo interface is connected to MotherDuck using the MotherDuck MCP Server. You have access to business data for a fictitious business, Eastlake, which manufactures and sells products to businesses. Start by asking a question.</p>
+            <h2><span className="welcome-full">Welcome to Zoo Data.</span><span className="welcome-short">Welcome</span></h2>
+            <p>This app is connected to Zoo business data, ask away!</p>
             <div className="welcome-prompts">
               {WELCOME_PROMPTS.map((example, idx) => (
                 <button

@@ -25,11 +25,11 @@ const nextConfig = {
     return [
       {
         source: '/docs',
-        destination: `${docsOrigin}/docs`,
+        destination: `${docsOrigin}/`,
       },
       {
         source: '/docs/:path*',
-        destination: `${docsOrigin}/docs/:path*`,
+        destination: `${docsOrigin}/:path*`,
       },
     ];
   },
