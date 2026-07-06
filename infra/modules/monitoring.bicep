@@ -2,9 +2,9 @@ param location string
 param logAnalyticsName string
 param applicationInsightsName string
 @description('Log Analytics retention in days.')
-@minValue(7)
+@minValue(30)
 @maxValue(730)
-param logAnalyticsRetentionDays int = 14
+param logAnalyticsRetentionDays int = 30
 @description('Daily ingestion cap in GB for Log Analytics workspace.')
 @minValue(0)
 param logAnalyticsDailyQuotaGb int = 1

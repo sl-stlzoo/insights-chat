@@ -273,4 +273,4 @@ Generated: 2026-07-02T15:15:13.991-05:00
 | RBAC for deploy identity | ✅ Complete | Reader at subscription, Contributor + User Access Administrator at `rg-maude-dev`, and AcrPush at `maudedevacr` |
 | Dev workflow Azure login | ✅ Complete | `Azure login (OIDC)` step now passes in run `28811115950` |
 | Dev workflow image build | ✅ Complete | `build-and-push` succeeded in run `28811332456` (web + docs images pushed to ACR) |
-| Dev workflow deploy + endpoint verification | ⚠️ Blocked (fix prepared) | Deploy job fails with `KeyVaultParameterReferenceSecretRetrieveFailed` because ARM cannot read parameter references; workflow now includes `az keyvault update --enabled-for-template-deployment true` and is pending push/retry |
+| Dev workflow deploy + endpoint verification | ⚠️ Blocked (fix prepared) | Key Vault ARM-reference failure is resolved; latest deploy run `28812218231` now fails on Log Analytics `RetentionInDays` SKU limits, and retention defaults were updated to `30` days pending rerun |
