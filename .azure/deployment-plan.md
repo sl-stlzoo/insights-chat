@@ -273,4 +273,4 @@ Generated: 2026-07-02T15:15:13.991-05:00
 | RBAC for deploy identity | ✅ Complete | Reader at subscription, Contributor + User Access Administrator at `rg-maude-dev`, and AcrPush at `maudedevacr` |
 | Dev workflow Azure login | ✅ Complete | `Azure login (OIDC)` step now passes in run `28811115950` |
 | Dev workflow image build | ✅ Complete | `build-and-push` succeeded in run `28811332456` (web + docs images pushed to ACR) |
-| Dev workflow deploy + endpoint verification | ⚠️ Blocked (fix prepared) | Workflow run `28812776343` deploys successfully, but active revision `maude-dev-web--0000007` cannot pull ACR images (`401 Unauthorized`); infra now sets ACA `configuration.registries` with system identity, pending redeploy |
+| Dev workflow deploy + endpoint verification | ⚠️ Blocked (fix prepared) | Workflow run `28813931093` deploys successfully and root is live (`307` to sign-in), but `/docs` returns `500` from docs sidecar due `nginx` fallback rewrite cycle; docs container config was corrected to `try_files ... /index.html`, pending redeploy |
