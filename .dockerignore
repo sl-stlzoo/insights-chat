@@ -1,0 +1,10 @@
+.git
+.github
+.next
+.azure
+docs/.astro
+docs/dist
+docs/node_modules
+node_modules
+npm-debug.log
+README.md

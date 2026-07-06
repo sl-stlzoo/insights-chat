@@ -1,0 +1,146 @@
+name: Deploy Azure Container Apps
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'docs/**'
+      - 'infra/**'
+      - 'lib/**'
+      - 'Dockerfile'
+      - 'docs/Dockerfile'
+      - '.github/workflows/deploy-aca.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-aca-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+  AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+  AZURE_PREFIX: ${{ vars.AZURE_PREFIX }}
+  AZURE_ENVIRONMENT_NAME: ${{ vars.AZURE_ENVIRONMENT_NAME }}
+  ACR_NAME: ${{ vars.ACR_NAME }}
+  KEY_VAULT_NAME: ${{ vars.KEY_VAULT_NAME }}
+  PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
+  APP_AZURE_AD_TENANT_ID: ${{ vars.APP_AZURE_AD_TENANT_ID }}
+  APP_AZURE_AD_CLIENT_ID: ${{ vars.APP_AZURE_AD_CLIENT_ID }}
+  MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME: ${{ vars.MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME }}
+  KV_SECRET_AZURE_AD_CLIENT_SECRET: ${{ vars.KV_SECRET_AZURE_AD_CLIENT_SECRET }}
+  KV_SECRET_NEXTAUTH_SECRET: ${{ vars.KV_SECRET_NEXTAUTH_SECRET }}
+  KV_SECRET_OPENAI_API_KEY: ${{ vars.KV_SECRET_OPENAI_API_KEY }}
+  KV_SECRET_MOTHERDUCK_TOKEN: ${{ vars.KV_SECRET_MOTHERDUCK_TOKEN }}
+  KV_SECRET_MOTHERDUCK_DIVE_ADMIN_TOKEN: ${{ vars.KV_SECRET_MOTHERDUCK_DIVE_ADMIN_TOKEN }}
+  KV_SECRET_POSTGRES_ADMIN_PASSWORD: ${{ vars.KV_SECRET_POSTGRES_ADMIN_PASSWORD }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    outputs:
+      web_image: ${{ steps.images.outputs.web_image }}
+      docs_image: ${{ steps.images.outputs.docs_image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Resolve image names
+        id: images
+        shell: bash
+        run: |
+          LOGIN_SERVER="$(az acr show --name "$ACR_NAME" --query loginServer -o tsv)"
+          TAG="${GITHUB_SHA::12}"
+          echo "web_image=$LOGIN_SERVER/maude-web:$TAG" >> "$GITHUB_OUTPUT"
+          echo "docs_image=$LOGIN_SERVER/maude-docs:$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push web image
+        shell: bash
+        run: |
+          az acr build \
+            --registry "$ACR_NAME" \
+            --image "maude-web:${GITHUB_SHA::12}" \
+            --file Dockerfile \
+            .
+
+      - name: Build and push docs image
+        shell: bash
+        run: |
+          az acr build \
+            --registry "$ACR_NAME" \
+            --image "maude-docs:${GITHUB_SHA::12}" \
+            --file docs/Dockerfile \
+            ./docs
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Bicep and update container images
+        shell: bash
+        run: |
+          SUBSCRIPTION_ID="${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+          KEY_VAULT_ID="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${AZURE_RESOURCE_GROUP}/providers/Microsoft.KeyVault/vaults/${KEY_VAULT_NAME}"
+
+          cat > /tmp/deploy-params.json <<EOF
+          {
+            "prefix": { "value": "${AZURE_PREFIX}" },
+            "environmentName": { "value": "${AZURE_ENVIRONMENT_NAME}" },
+            "location": { "value": "${AZURE_LOCATION}" },
+            "publicAppUrl": { "value": "${PUBLIC_APP_URL}" },
+            "azureAdTenantId": { "value": "${APP_AZURE_AD_TENANT_ID}" },
+            "azureAdClientId": { "value": "${APP_AZURE_AD_CLIENT_ID}" },
+            "azureAdClientSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_AZURE_AD_CLIENT_SECRET}" } },
+            "nextAuthSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_NEXTAUTH_SECRET}" } },
+            "openAiApiKey": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_OPENAI_API_KEY}" } },
+            "motherDuckToken": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_MOTHERDUCK_TOKEN}" } },
+            "motherDuckDiveAdminToken": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_MOTHERDUCK_DIVE_ADMIN_TOKEN}" } },
+            "motherDuckDiveServiceAccountUsername": { "value": "${MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME}" },
+            "postgresAdminPassword": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_POSTGRES_ADMIN_PASSWORD}" } },
+            "webContainerImage": { "value": "${{ needs.build-and-push.outputs.web_image }}" },
+            "docsContainerImage": { "value": "${{ needs.build-and-push.outputs.docs_image }}" }
+          }
+          EOF
+
+          az deployment group create \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --template-file ./infra/main.bicep \
+            --parameters @/tmp/deploy-params.json
+
+      - name: Show deployed URL
+        shell: bash
+        run: |
+          FQDN="$(az containerapp show -g "$AZURE_RESOURCE_GROUP" -n "${AZURE_PREFIX}-${AZURE_ENVIRONMENT_NAME}-web" --query properties.configuration.ingress.fqdn -o tsv)"
+          echo "https://$FQDN"

@@ -1,0 +1,23 @@
+{
+  "name": "docs",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "sync:content": "node ./scripts/sync-readmes.mjs",
+    "dev": "npm run sync:content && astro dev",
+    "start": "astro dev",
+    "build": "npm run sync:content && astro build",
+    "preview": "astro preview",
+    "check": "npm run sync:content && astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/starlight": "^0.41.2",
+    "@orama/orama": "^3.1.18",
+    "astro": "^7.0.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sharp": "^0.34.5"
+  }
+}

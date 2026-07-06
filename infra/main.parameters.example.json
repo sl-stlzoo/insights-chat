@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "value": "maude"
+    },
+    "environmentName": {
+      "value": "dev"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "publicAppUrl": {
+      "value": "https://replace-me-with-your-app-hostname"
+    },
+    "azureAdTenantId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "azureAdClientId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "azureAdClientSecret": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/<subId>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vaultName>"
+        },
+        "secretName": "azure-ad-client-secret"
+      }
+    },
+    "nextAuthSecret": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/<subId>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vaultName>"
+        },
+        "secretName": "nextauth-secret"
+      }
+    },
+    "openAiApiKey": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/<subId>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vaultName>"
+        },
+        "secretName": "openai-api-key"
+      }
+    },
+    "motherDuckToken": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/<subId>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vaultName>"
+        },
+        "secretName": "motherduck-token"
+      }
+    },
+    "motherDuckDiveAdminToken": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/<subId>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vaultName>"
+        },
+        "secretName": "motherduck-dive-admin-token"
+      }
+    },
+    "motherDuckDiveServiceAccountUsername": {
+      "value": "service-account-name"
+    },
+    "postgresAdminPassword": {
+      "reference": {
+        "keyVault": {
+          "id": "/subscriptions/<subId>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vaultName>"
+        },
+        "secretName": "postgres-admin-password"
+      }
+    },
+    "webContainerImage": {
+      "value": "replace-with-acr-login-server/maude-web:latest"
+    },
+    "docsContainerImage": {
+      "value": "replace-with-acr-login-server/maude-docs:latest"
+    }
+  }
+}

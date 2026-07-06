@@ -1,0 +1,51 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.16",
+  "id": "${TEAMS_APP_ID}",
+  "version": "1.1.0",
+  "packageName": "com.enterprise.maude.analytics",
+  "developer": {
+    "name": "Enterprise Analytics",
+    "websiteUrl": "${PUBLIC_APP_URL}",
+    "privacyUrl": "${PUBLIC_APP_URL}/docs",
+    "termsOfUseUrl": "${PUBLIC_APP_URL}/docs"
+  },
+  "name": {
+    "short": "Maude Foundry",
+    "full": "Maude Analytics Assistant"
+  },
+  "description": {
+    "short": "Secure MotherDuck analytics assistant.",
+    "full": "Queries corporate data stores via Azure AI Foundry endpoints, surfacing telemetry in a Teams-ready Dive workspace."
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "staticTabs": [
+    {
+      "entityId": "maudeDiveViewerTab",
+      "name": "Data Explorer Workspace",
+      "contentUrl": "${PUBLIC_APP_URL}/tab/explorer",
+      "websiteUrl": "${PUBLIC_APP_URL}/tab/explorer",
+      "scopes": ["personal"]
+    }
+  ],
+  "bots": [
+    {
+      "botId": "${TEAMS_BOT_ID}",
+      "scopes": ["personal", "team"],
+      "supportsFiles": false,
+      "isNotificationOnly": false
+    }
+  ],
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": [
+    "${APP_DOMAIN}",
+    "*.motherduck.com"
+  ],
+  "webApplicationInfo": {
+    "id": "${AZURE_AD_CLIENT_ID}",
+    "resource": "api://${APP_DOMAIN}/${AZURE_AD_CLIENT_ID}"
+  }
+}

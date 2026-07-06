@@ -1,0 +1,184 @@
+[
+  {
+    "id": "adr/0001-azure-container-apps-and-docs-sidecar",
+    "title": "ADR 0001 - Azure Container Apps with docs sidecar",
+    "description": "Choose a single multi-container ACA app for the runtime target.",
+    "slug": "/adr/0001-azure-container-apps-and-docs-sidecar/",
+    "body": "ADR 0001: Azure Container Apps with docs sidecar Status Accepted Decision Deploy the Next.js app and the Astro Starlight docs site as **two containers in one Azure Container App**. Why - Keeps the docs site close to the runtime it describes - Allows a shared hostname with routing - Avoids managing a second public ingress surface for a small development-scale deployment Consequences - The main app must proxy docs traffic to the sidecar - Bicep is preferred over a higher-level deploy wrapper for this topology"
+  },
+  {
+    "id": "adr/0002-app-level-entra-auth",
+    "title": "ADR 0002 - App-level Entra auth",
+    "description": "Use application-managed OIDC instead of platform-only easy auth.",
+    "slug": "/adr/0002-app-level-entra-auth/",
+    "body": "ADR 0002: App-level Entra auth Status Accepted Decision Use **app-level Microsoft Entra authentication** in Next.js instead of relying solely on platform-level auth enforcement. Why - Keeps local development and production behavior aligned - Gives the app explicit control over protected routes and user context - Makes the sign-in experience easier to theme and document Consequences - The app must own auth middleware and session handling - Entra app registration settings become part of the application contract"
+  },
+  {
+    "id": "adr/0003-openai-first-provider-abstraction",
+    "title": "ADR 0003 - OpenAI-first provider abstraction",
+    "description": "Replace OpenRouter assumptions while keeping Azure AI Foundry migration ready.",
+    "slug": "/adr/0003-openai-first-provider-abstraction/",
+    "body": "ADR 0003: OpenAI-first provider abstraction Status Accepted Decision Move the application to an **OpenAI-first** provider contract and preserve a separate configuration seam for a future Azure AI Foundry adapter. Why - The immediate deployment target will use an OpenAI API key - Azure AI Foundry remains a near-term evolution path - A thin provider seam avoids repeating prompt, tool, and streaming logic later Consequences - Existing OpenRouter model identifiers and assumptions must be removed or mapped - The environment contract must clearly separate current and future provider settings"
+  },
+  {
+    "id": "adr/0004-starlight-readme-rollup-and-orama-search",
+    "title": "ADR 0004 - Starlight README rollups and Orama search",
+    "description": "Publish repository context through generated Starlight pages and a local Orama index.",
+    "slug": "/adr/0004-starlight-readme-rollup-and-orama-search/",
+    "body": "ADR 0004: Starlight README rollups and Orama search Status Accepted Decision Use **Astro Starlight** for the docs site, generate repository guide pages from curated files, and index the docs corpus with **Orama**. Why - The docs site needs to stay close to the codebase - README rollups reduce duplication between repo docs and published docs - Orama offers a lightweight client-side search layer without requiring a separate hosted search service for this project Consequences - A content sync script becomes part of the build process - Curated subdirectory files are now part of the documentation contract"
+  },
+  {
+    "id": "adr/0005-embedded-dives-for-live-visualizations",
+    "title": "ADR 0005 - Embedded Dives for live visualizations",
+    "description": "Use MotherDuck Dives plus embed sessions for deployed-app visual previews.",
+    "slug": "/adr/0005-embedded-dives-for-live-visualizations/",
+    "body": "ADR 0005: Embedded Dives for live visualizations Status Accepted Decision For the deployed web app, use **MotherDuck Dives** as the persistent visualization artifact and render them with **embed sessions** in a sandboxed iframe. Why - The full **Dive Viewer MCP App** is native to MCP App-capable clients such as Claude, not to arbitrary custom web apps. - Embedded Dives still run against live data and give users an in-app preview. - MotherDuck already provides the backend API and session model for secure embedding. Consequences - The backend must hold an admin-capable MotherDuck token and a dedicated service-account username for embed-session creation. - The frontend must handle sandboxed iframe postMessage events for safe link navigation and related behaviors."
+  },
+  {
+    "id": "adr/0006-teams-hybrid-delivery-target",
+    "title": "ADR 0006 - Teams hybrid delivery target",
+    "description": "Keep the web app deployable now while aligning the architecture to an eventual Teams bot + personal tab experience.",
+    "slug": "/adr/0006-teams-hybrid-delivery-target/",
+    "body": "ADR 0006: Teams hybrid delivery target Status Accepted Decision Treat the current Azure Container Apps web app as the **foundation** for an eventual **single-tenant Microsoft Teams hybrid app** rather than as the final delivery surface. Why - The updated PRD makes Teams the long-term user entry point - The personal tab needs a route that can host MotherDuck Dive workspaces - Teams deep links and SSO constraints affect routing, headers, and auth design Consequences - The app now needs Teams-aware routing and signed tab-state handling - Documentation and env contracts must include Teams placeholders - The current app-level Entra auth should remain compatible with a future Teams SSO exchange instead of hard-coding a purely browser-first experience"
+  },
+  {
+    "id": "adr",
+    "title": "ADR index",
+    "description": "Architecture decision log for the Azure modernization.",
+    "slug": "/adr/",
+    "body": "Architecture Decision Records The ADRs in this section explain **why** the current architecture and delivery approach were chosen. - ADR 0001 - ADR 0002 - ADR 0003 - ADR 0004 - ADR 0005 - ADR 0006"
+  },
+  {
+    "id": "getting-started/overview",
+    "title": "Overview",
+    "description": "What this modernization is delivering and how the docs sidecar is organized.",
+    "slug": "/getting-started/overview/",
+    "body": "Overview This documentation sidecar turns the repository into a working delivery knowledge base. What is included - **Platform docs** for Azure Container Apps, Entra auth, configuration, and deployment - **ADRs** that capture the major implementation decisions - **Phase tracking** so progress stays visible - **Repository rollups** generated automatically from curated files in the codebase - **Orama search** across the docs corpus Expected deployment shape - The main **Next.js** app runs in Azure Container Apps - The **Astro Starlight** docs site runs as a sidecar container in the same ACA app - The main app proxies to the docs sidecar Documentation workflow 1. Update a subdirectory 2. Run inside 3. The README is rolled into 4. The Orama search index is regenerated automatically"
+  },
+  {
+    "id": "index",
+    "title": "Maude modernization",
+    "description": "Azure Container Apps delivery docs for the Maude MotherDuck experience.",
+    "slug": "/index/",
+    "body": "import { Card, CardGrid } from '@astrojs/starlight/components'; Delivery threads Track the Bicep infrastructure, Container Apps topology, secrets model, and deployment blockers. Follow Entra auth, OpenAI provider migration, and application shell updates. Every curated subdirectory README rolls into the docs automatically through the content sync pipeline. Architecture Decision Records capture the why behind each major implementation choice. Orama-powered client-side search helps engineers jump straight to the right design note or README rollup."
+  },
+  {
+    "id": "platform/azure-container-apps",
+    "title": "Azure Container Apps target",
+    "description": "Planned runtime topology for the Azure deployment.",
+    "slug": "/platform/azure-container-apps/",
+    "body": "Azure Container Apps target The Azure target is a **single multi-container Container App**: - **Primary container:** Next.js application and API routes - **Sidecar container:** Astro Starlight static docs site - **Ingress target:** the main web container - **Docs pathing:** proxied to the sidecar over the shared pod network Supporting services - Azure Container Registry - Azure Key Vault - Azure Database for PostgreSQL Flexible Server - Application Insights - Log Analytics - Microsoft Entra ID app registration - MotherDuck embed-session backend exchange for live Dives Current Azure blocker The subscription currently reports because is not yet registered. Region switching alone does not resolve this; the provider must be registered before quota is rechecked. Dive adaptation The deployed app will **persist visualizations as MotherDuck Dives** and render them through MotherDuck's embed-session flow. That gives the app a live-data experience that aligns with the Dive Viewer workflow, while staying compatible with a custom web client that is not itself an MCP App host."
+  },
+  {
+    "id": "platform/microsoft-teams-delivery",
+    "title": "Microsoft Teams delivery target",
+    "description": "Eventual single-tenant Teams bot plus personal tab delivery shape from the updated PRD.",
+    "slug": "/platform/microsoft-teams-delivery/",
+    "body": "Microsoft Teams delivery target The updated PRD changes the eventual end-user surface from a standalone web app to a **hybrid Microsoft Teams application**: - **Conversational bot** for ad-hoc natural-language queries - **Personal tab** for high-density visual analysis - **Adaptive Card deep links** that hand users from chat into a dedicated Dive workspace What this means for the current repo - exists as a Teams-friendly tab route - A signed state token can carry Dive context into the tab - The app adds frame-ancestor and frame-src controls for the Teams embed surface - The provider layer now has a clear path to keyless Azure AI Foundry access What is still future-facing - Microsoft Teams AI SDK bot orchestration - Azure Bot Service wiring - Teams Tab SSO-specific token exchange - Full Adaptive Card deep-link generation and conversation handoff"
+  },
+  {
+    "id": "project/phase-tracker",
+    "title": "Phase tracker",
+    "description": "Execution tracker for the Azure modernization effort.",
+    "slug": "/project/phase-tracker/",
+    "body": "Phase tracker Current status | Phase | Scope | Status | |---|---|---| | 1 | Azure planning and region/quota analysis | Complete | | 2 | Source repository import | Complete | | 3 | Entra auth and application shell updates | In progress | | 4 | OpenAI provider migration | In progress | | 5 | Astro Starlight sidecar and Orama search | In progress | | 6 | Azure infrastructure and deployment assets | Pending | | 7 | Validation and deployment | Pending | Milestones - [x] Deployment plan written to - [x] Subscription, region, and quota blocker identified - [x] Repository imported into the working directory - [ ] Entra-authenticated sign-in flow working locally - [ ] OpenAI-backed chat orchestration working locally - [ ] Docs sidecar building with generated README rollups - [ ] Bicep infrastructure complete - [ ] files refreshed and documented - [ ] Validation handoff complete"
+  },
+  {
+    "id": "repository/generated/app/api",
+    "title": "App / Api",
+    "description": "Rolled up from app/api/README.md.",
+    "slug": "/repository/generated/app/api/",
+    "body": "> Source: App API This directory contains the Next.js route handlers that power the application. Current responsibilities - - Conversational orchestration, MCP tool execution, and visualization output - - Microsoft Entra authentication entry point - - Database health and predefined query access - - Secure exchange for MotherDuck Dive embed sessions - - Follow-up prompt generation Azure direction - Protected APIs should remain behind app-level auth - Secrets should be supplied through Key Vault-backed environment variables - Dive embed sessions must be minted server-side only"
+  },
+  {
+    "id": "repository/generated/app/components",
+    "title": "App / Components",
+    "description": "Rolled up from app/components/README.md.",
+    "slug": "/repository/generated/app/components/",
+    "body": "> Source: App Components The components in this directory render the chat interface, visualizations, and supporting user interactions. Notable components - - Main conversation shell and SSE event consumer - - HTML report rendering and sharing - - Embedded MotherDuck Dive rendering - - Signed-in user display and sign-out action - - Entra sign-in entry point Design goals - Keep the chat workflow fast and focused - Favor readable hierarchy, generous spacing, and obvious actions - Preserve a clean seam between data/AI orchestration and visualization rendering"
+  },
+  {
+    "id": "repository/generated/app",
+    "title": "App",
+    "description": "Rolled up from app/README.md.",
+    "slug": "/repository/generated/app/",
+    "body": "> Source: App This directory contains the Next.js application shell, route handlers, shared report and Dive rendering surfaces, and the user-facing chat experience. Key areas - - Server routes for chat orchestration, auth, database health, and Dive embedding - - Chat UI, visualization rendering, sharing, and session-aware controls - - Model-specific entry routes for the main experience - - Public report sharing surface Delivery notes - The app is being modernized for Azure Container Apps and Microsoft Entra ID - The UI theme is moving to a tokenized Saint Louis Zoo-inspired palette - Live visualizations are shifting toward embedded MotherDuck Dives"
+  },
+  {
+    "id": "repository/generated/app/share",
+    "title": "App / Share",
+    "description": "Rolled up from app/share/README.md.",
+    "slug": "/repository/generated/app/share/",
+    "body": "> Source: Shared Reports This route serves publicly accessible shared report pages. Responsibilities - Resolve saved report content by ID - Render HTML responses safely for viewers outside the authenticated app shell - Provide a bridge back into the main application context for follow-up analysis Direction - Shared HTML reports remain supported for lightweight distribution - Live MotherDuck Dives are the preferred path for rich, embedded visual workspaces"
+  },
+  {
+    "id": "repository/generated/app/tab",
+    "title": "App / Tab",
+    "description": "Rolled up from app/tab/README.md.",
+    "slug": "/repository/generated/app/tab/",
+    "body": "> Source: Teams Tab Routes This directory contains routes that are intended to support the eventual Microsoft Teams personal tab experience. Current route - - Teams-friendly Dive workspace host that can verify a signed state token and render an embedded MotherDuck Dive Direction - Deep links from Teams cards should target these routes - Signed state should carry only the minimum context required to reconstruct the workspace safely"
+  },
+  {
+    "id": "repository/generated/docs",
+    "title": "Docs",
+    "description": "Rolled up from docs/README.md.",
+    "slug": "/repository/generated/docs/",
+    "body": "> Source: Documentation Sidecar This package builds the Astro Starlight documentation site that will run as the docs sidecar for the main Azure Container Apps deployment. Responsibilities - Publish architectural guidance, ADRs, and delivery notes - Surface the live phase tracker for this modernization effort - Roll up repository files into the docs navigation automatically - Provide Orama-backed client-side search for the generated docs corpus Commands | Command | Purpose | |---|---| | | Install Astro, Starlight, React, and Orama dependencies | | | Regenerate rolled-up README pages and the search index | | | Sync generated content, then run the docs dev server | | | Sync generated content, then build the static docs site | | | Run Astro type/content checks after syncing content | Generated Content The script scans the repository for curated subdirectory files and emits generated docs pages under . It also creates for the Orama search experience."
+  },
+  {
+    "id": "repository/generated/infra",
+    "title": "Infra",
+    "description": "Rolled up from infra/README.md.",
+    "slug": "/repository/generated/infra/",
+    "body": "> Source: Infrastructure This directory contains the Bicep infrastructure for the Azure Container Apps deployment target. Scope - Azure Container Apps environment and multi-container app - Azure Container Registry - Azure Key Vault and application secrets - Azure Database for PostgreSQL Flexible Server - Application Insights and Log Analytics - Required role assignments for ACR pull and Key Vault secret access Deployment notes - must be registered in the target subscription before the Container Apps resources can be provisioned. - The main app expects a public application URL for Entra redirect handling. - MotherDuck Dive embedding requires a Business-plan admin token plus a dedicated service-account username; both are modeled as secrets."
+  },
+  {
+    "id": "repository/generated/lib",
+    "title": "Lib",
+    "description": "Rolled up from lib/README.md.",
+    "slug": "/repository/generated/lib/",
+    "body": "> Source: Lib Shared server-side helpers live here. Current responsibilities - MotherDuck MCP connectivity - Database access helpers - Authentication configuration Direction - Provider-specific configuration should be isolated behind small helpers - Environment variable access should stay centralized and well documented - Azure-hosted secrets should flow in via environment variables or managed integrations, not hardcoded values"
+  },
+  {
+    "id": "repository/generated/prompts",
+    "title": "Prompts",
+    "description": "Rolled up from prompts/README.md.",
+    "slug": "/repository/generated/prompts/",
+    "body": "> Source: Prompts This directory contains the markdown prompt assets used by the chat orchestration layer. Contents - System prompts for standalone and blended execution - Shared prompt fragments for database rules, narration, and presentation - User-message templates that wrap specific flows like shared-report follow-ups Direction - Prompt assets should stay composable and readable - Visualization guidance will continue to evolve as MotherDuck Dive usage expands - Prompt changes that alter behavior materially should be captured in ADRs or docs notes"
+  },
+  {
+    "id": "repository/generated/root",
+    "title": "Repository Root",
+    "description": "Rolled up from ./README.md.",
+    "slug": "/repository/generated/root/",
+    "body": "> Source: Maude - Azure-ready MotherDuck analytics workspace Maude is a Next.js analytics workspace that connects to MotherDuck through MCP, uses Microsoft Entra ID for application access, and is being prepared for Azure Container Apps with a sidecar Astro Starlight documentation site. What this repo now targets - **Primary runtime:** Azure Container Apps - **Current LLM provider:** OpenAI - **Future LLM path:** Azure AI Foundry with keyless Entra auth - **Visualization path:** MotherDuck Dives embedded through secure backend-created embed sessions - **Docs experience:** Astro Starlight sidecar under - **Future end-user shell:** Microsoft Teams hybrid app (bot + personal tab) Key capabilities - **Entra-protected web app** with app-level auth routes and middleware - **MotherDuck MCP integration** for schema discovery, SQL execution, and Dive workflows - **Live Dive embedding** via - **Teams-ready tab route** at - **README rollup pipeline** that publishes curated repo docs into the Starlight site - **Azure infrastructure** expressed as Bicep in Runtime architecture MotherDuck Dive strategy The repo now distinguishes between two visualization modes: 1. **Shared HTML reports** for lightweight export/share scenarios 2. **MotherDuck Dives** for live, embedded visual workspaces The deployed app does **not** pretend to host the native MotherDuck Dive Viewer MCP App. Instead, it: - creates or updates Dives through MotherDuck MCP tools - requests short-lived embed sessions on the backend - renders the live Dive in a sandboxed iframe That keeps the deployed app compatible with MotherDuck's secure embedding model while still aligning with the Dive Viewer workflow used in MCP App-capable clients like Claude. Environment contracts Use the provided examples: - Root app: - Docs sidecar: The root example is organized by: - application URLs and session secrets - Entra auth - OpenAI - MotherDuck MCP access - MotherDuck Dive embedding - PostgreSQL persistence - Azure runtime placeholders - future Azure AI Foundry settings Local development App Docs sidecar Production builds Azure deployment assets - **Infrastructure:** - **Bicep modules:** - **Web container:** - **Docs container:** - **Azure helper scripts:** - **Deployment plan:** Important Azure note The current target subscription must register before Container Apps resources can be provisioned. The plan and scripts in this repo account for that prerequisite. Teams trajectory The attached PRD shifts the eventual end-user experience into Microsoft Teams. This repo now includes the first pieces of that delivery shape: - - personal tab-ready Dive workspace route - - signed deep-link state token helper - - starter Teams manifest The current web deployment remains the near-term execution target, but the app is now being shaped so Teams bot/tab delivery can layer on without reworking the core analytics workspace. Project structure"
+  },
+  {
+    "id": "repository/generated/scripts",
+    "title": "Scripts",
+    "description": "Rolled up from scripts/README.md.",
+    "slug": "/repository/generated/scripts/",
+    "body": "> Source: Scripts This directory contains operational scripts for local setup and supporting workflows. Current responsibilities - Database initialization for shared report storage Expected additions - Docs-side content generation and indexing helpers live under - Azure deployment helper scripts may be added as the infrastructure work is finalized"
+  },
+  {
+    "id": "repository/generated/teams",
+    "title": "Teams",
+    "description": "Rolled up from teams/README.md.",
+    "slug": "/repository/generated/teams/",
+    "body": "> Source: Teams Delivery This directory contains the scaffolding for the eventual Microsoft Teams-hosted delivery model described in the updated PRD. Scope - Personal tab manifest template - Deep-link aware tab route expectations - Notes for bot + tab integration Current direction - The Next.js app exposes for the Teams personal tab scenario - A signed state token can carry Dive context into the tab - The embedded Dive renderer is shared with the web app so the same live visualization pattern works both on the web and inside Teams"
+  },
+  {
+    "id": "repository",
+    "title": "Repository rollups",
+    "description": "Generated views of curated README files from the application repository.",
+    "slug": "/repository/",
+    "body": "Repository rollups This section is generated from curated files inside the repository. The generated pages live under and are rebuilt by in the docs package."
+  },
+  {
+    "id": "search",
+    "title": "Search",
+    "description": "Orama-powered search across ADRs, phase tracking, platform notes, and repository README rollups.",
+    "slug": "/search/",
+    "body": "import DocsSearch from '../../components/DocsSearch';"
+  }
+]

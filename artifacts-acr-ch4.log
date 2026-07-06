@@ -1,0 +1,88 @@
+2026/07/02 21:33:53 Downloading source code...
+
+2026/07/02 21:33:54 Finished downloading source code
+
+2026/07/02 21:33:54 Using acb_vol_ab9f40b6-41cf-4ac3-8733-6f01a03e83f6 as the home volume
+2026/07/02 21:33:54 Setting up Docker configuration...
+2026/07/02 21:33:55 Successfully set up Docker configuration
+2026/07/02 21:33:55 Logging in to registry: maudedevacr.azurecr.io
+2026/07/02 21:33:55 Successfully logged into maudedevacr.azurecr.io
+2026/07/02 21:33:55 Executing step ID: build. Timeout(sec): 28800, Working directory: '', Network: ''
+2026/07/02 21:33:55 Scanning for dependencies...
+2026/07/02 21:33:56 Successfully scanned dependencies
+2026/07/02 21:33:56 Launching container with name: build
+Sending build context to Docker daemon  1.483MB
+
+
+
+Step 1/21 : FROM node:22-alpine AS base
+22-alpine: Pulling from library/node
+
+55afa1ecc21d: Pulling fs layer
+3f4c164634d2: Pulling fs layer
+1d4d101ceaad: Pulling fs layer
+d10ff586f6bd: Pulling fs layer
+d10ff586f6bd: Waiting
+1d4d101ceaad: Verifying Checksum
+1d4d101ceaad: Download complete
+55afa1ecc21d: Verifying Checksum
+55afa1ecc21d: Download complete
+d10ff586f6bd: Verifying Checksum
+d10ff586f6bd: Download complete
+55afa1ecc21d: Pull complete
+3f4c164634d2: Verifying Checksum
+3f4c164634d2: Download complete
+3f4c164634d2: Pull complete
+
+1d4d101ceaad: Pull complete
+d10ff586f6bd: Pull complete
+Digest: sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2
+Status: Downloaded newer image for node:22-alpine
+ ---> bd168dc5d9d7
+Step 2/21 : WORKDIR /app
+ ---> Running in 55356cb5fdc0
+Removing intermediate container 55356cb5fdc0
+ ---> f64cae6120b4
+Step 3/21 : ENV NEXT_TELEMETRY_DISABLED=1
+ ---> Running in 0fa07cafdcd7
+Removing intermediate container 0fa07cafdcd7
+ ---> 17e0eec9926c
+Step 4/21 : FROM base AS deps
+ ---> 17e0eec9926c
+Step 5/21 : COPY package.json package-lock.json ./
+ ---> 26766feef4b6
+Step 6/21 : RUN npm ci
+
+ ---> Running in e79b70465e6f
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+
+npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+
+
+
+added 599 packages, and audited 600 packages in 28s
+
+255 packages are looking for funding
+  run `npm fund` for details
+
+20 vulnerabilities (7 moderate, 13 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 11.18.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.18.0
+npm notice To update run: npm install -g npm@11.18.0
+npm notice

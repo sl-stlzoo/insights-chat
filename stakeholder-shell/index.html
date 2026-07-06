@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maude Stakeholder Preview</title>
+  <style>
+    :root {
+      --brand-blue: #5887da;
+      --brand-purple: #624b78;
+      --brand-red: #c10230;
+      --brand-orange: #ac4525;
+      --brand-gold: #cf8a00;
+      --brand-green: #8a8c49;
+      --brand-gray: #8c837b;
+      --brand-navy: #00538b;
+      --bg: #0f172a;
+      --card: #111827;
+      --line: #243244;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --ok: #34d399;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: linear-gradient(180deg, #0f172a 0%, #0b1220 100%);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 24, 39, 0.92);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 16px 20px; }
+    .title { margin: 0; font-size: 22px; font-weight: 700; }
+    .sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    .pill {
+      display: inline-block; border: 1px solid var(--line); padding: 4px 10px;
+      border-radius: 999px; margin-right: 8px; margin-top: 8px; font-size: 12px; color: #cbd5e1;
+      background: #0b1325;
+    }
+    .grid {
+      display: grid; gap: 14px; margin-top: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    h2 { margin: 0 0 10px; font-size: 16px; }
+    h3 { margin: 0 0 8px; font-size: 14px; color: #dbeafe; }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 6px 0; color: #d1d5db; }
+    .status { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 2px rgba(52,211,153,0.2); }
+    .tabs { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+    .tab {
+      border: 1px solid var(--line); background: #0c1426; color: #cbd5e1;
+      padding: 7px 10px; border-radius: 8px; cursor: pointer; font-size: 12px;
+    }
+    .tab.active { border-color: var(--brand-blue); color: #fff; background: #14233f; }
+    .panel { display: none; font-size: 14px; color: #d1d5db; }
+    .panel.active { display: block; }
+    .lane {
+      border: 1px dashed #2e4058;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 8px 0;
+      background: #0e182d;
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      color: #bfdbfe;
+      word-break: break-all;
+    }
+    .btn {
+      border: 1px solid var(--brand-blue);
+      background: var(--brand-blue);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .btn.alt { background: #0c1426; color: #dbeafe; border-color: #36537c; }
+    .hint { color: #9ca3af; font-size: 12px; margin-top: 8px; }
+    footer { color: var(--muted); font-size: 12px; margin-top: 14px; }
+    .legend span { margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1 class="title">Maude Stakeholder Preview Shell</h1>
+      <p class="sub">Temporary visual checkpoint deployed on Azure Container Apps while full app images are being finalized.</p>
+      <span class="pill">Azure Container Apps</span>
+      <span class="pill">Entra Auth Planned</span>
+      <span class="pill">MotherDuck Dives Planned</span>
+      <span class="pill">Teams-Ready Path</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid">
+      <article class="card">
+        <h2>Delivery Snapshot</h2>
+        <div class="status"><span class="dot"></span><span>Deployment is live with cost-optimized scaling controls.</span></div>
+        <ul>
+          <li>Scale-to-zero off-hours + daytime warm replica (America/Chicago).</li>
+          <li>HTTP autoscaling for traffic bursts.</li>
+          <li>Telemetry guardrails enabled for baseline cost control.</li>
+          <li>Next milestone: replace this shell with full app + docs images.</li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Planned Architecture Components</h2>
+        <ul>
+          <li>Next.js app shell with Entra-protected user sessions.</li>
+          <li>MotherDuck MCP workflows + embedded Dive experience.</li>
+          <li>Astro Starlight docs sidecar with Orama search.</li>
+          <li>Key Vault-backed secret model with managed identity.</li>
+          <li>PostgreSQL persistence + optional scheduled stop/start.</li>
+          <li>Application Insights + Log Analytics observability.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:14px;">
+      <h2>Interactive Channel Preview</h2>
+      <div class="tabs">
+        <button class="tab active" data-panel="web">Web Experience</button>
+        <button class="tab" data-panel="teams-tab">Teams Personal Tab</button>
+        <button class="tab" data-panel="teams-bot">Teams Bot Assist</button>
+        <button class="tab" data-panel="delivery">Delivery Path</button>
+      </div>
+
+      <div id="web" class="panel active">
+        <div class="lane">
+          <h3>Web-first rollout</h3>
+          <p>Users sign in with Entra, chat with Maude, run MotherDuck analytics tasks, and open embedded Dives inline.</p>
+        </div>
+      </div>
+
+      <div id="teams-tab" class="panel">
+        <div class="lane">
+          <h3>Teams personal tab path</h3>
+          <p>Teams hosts a focused analytics workspace via <span class="mono">/tab/explorer</span> with signed context parameters.</p>
+          <button class="btn alt" id="mock-link">Generate mock Teams deep link</button>
+          <p class="mono" id="link-output">teams link preview will appear here...</p>
+        </div>
+      </div>
+
+      <div id="teams-bot" class="panel">
+        <div class="lane">
+          <h3>Teams bot assist path</h3>
+          <p>Bot-guided prompts can hand off to the personal tab for live Dive viewing and collaboration loops.</p>
+        </div>
+      </div>
+
+      <div id="delivery" class="panel">
+        <div class="lane">
+          <h3>Current deployment sequence</h3>
+          <p>1. Temporary shell for stakeholder review → 2. Full image pipeline via GitHub Actions + OIDC → 3. Continuous hardening toward production readiness.</p>
+        </div>
+      </div>
+      <p class="hint">This shell is intentionally lightweight and does not expose production data or secrets.</p>
+    </section>
+
+    <section class="card" style="margin-top:14px;">
+      <h2>Architecture at a glance</h2>
+      <div class="legend">
+        <span class="pill">Client</span><span class="pill">App</span><span class="pill">Data + AI</span><span class="pill">Security</span>
+      </div>
+      <pre class="mono">User / Teams
+  -> Azure Container Apps (Maude Web + Docs Sidecar)
+    -> Entra ID auth session
+    -> OpenAI model runtime
+    -> MotherDuck MCP + Dives embed-session
+    -> PostgreSQL persistence
+    -> Key Vault secrets via managed identity
+    -> App Insights + Log Analytics</pre>
+    </section>
+
+    <footer>
+      Built for stakeholder review. Full experience deployment will replace this shell.
+    </footer>
+  </main>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.panel');
+    tabs.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        tabs.forEach((t) => t.classList.remove('active'));
+        panels.forEach((p) => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.panel).classList.add('active');
+      });
+    });
+
+    document.getElementById('mock-link').addEventListener('click', () => {
+      const token = btoa('sample-teams-state-token').replace(/=+$/,'');
+      const link = `https://teams.microsoft.com/l/entity/<app-id>/tab-explorer?webUrl=https%3A%2F%2F<host>%2Ftab%2Fexplorer%3Fstate%3D${token}`;
+      document.getElementById('link-output').textContent = link;
+    });
+  </script>
+</body>
+</html>

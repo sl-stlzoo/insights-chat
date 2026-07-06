@@ -1,0 +1,48 @@
+:root {
+  --sl-color-accent-low: #e7eff9;
+  --sl-color-accent: #00538b;
+  --sl-color-accent-high: #08345d;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #fbf8f4;
+  --sl-color-gray-2: #f2ece5;
+  --sl-color-gray-3: #e5ddd4;
+  --sl-color-gray-4: #b4aba3;
+  --sl-color-gray-5: #8c837b;
+  --sl-color-gray-6: #6d665f;
+  --sl-color-black: #1f2a38;
+  --sl-font: "Inter", "Segoe UI", Arial, sans-serif;
+  --sl-font-system: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+:root[data-theme='dark'] {
+  --sl-color-accent-low: #14385f;
+  --sl-color-accent: #7da4eb;
+  --sl-color-accent-high: #c6dbff;
+  --sl-color-gray-1: #e7eaf0;
+  --sl-color-gray-2: #ccd3de;
+  --sl-color-gray-3: #9aa3b0;
+  --sl-color-gray-4: #76808f;
+  --sl-color-gray-5: #495364;
+  --sl-color-gray-6: #2b3442;
+  --sl-color-black: #111722;
+}
+
+h1,
+h2,
+h3,
+h4,
+.hero h1 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+}
+
+.hero {
+  background:
+    radial-gradient(circle at top left, rgba(88, 135, 218, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(98, 75, 120, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 244, 239, 0.96));
+  border-radius: 1.5rem;
+}
+
+.card {
+  border-radius: 1rem;
+}
