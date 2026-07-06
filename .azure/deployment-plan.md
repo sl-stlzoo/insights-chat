@@ -256,8 +256,21 @@ Generated: 2026-07-02T15:15:13.991-05:00
 
 ## 10. Next Steps
 
-> Current: ready for deployment
+> Current: deployment in progress (control-plane gates mostly cleared)
 
-1. Carry forward the live-Azure prerequisite to register `Microsoft.App` and re-check Container Apps quota before deployment.
-2. Use `azure-deploy` for the actual Azure-side rollout.
-3. Configure the real Entra app registration values, production host URL, and MotherDuck service-account secrets during deployment.
+1. Push the Dockerfile fix (`mkdir -p public`) so GitHub Actions can build the `maude-web` image from `main`.
+2. Re-run `Deploy Azure Container Apps` for `dev` and verify both `build-and-push` and `deploy` jobs complete.
+3. Validate `https://<aca-fqdn>/` and `https://<aca-fqdn>/docs` after the deploy job updates image tags.
+4. Promote with the same workflow to `prod` behind the existing environment approval gate.
+
+## 11. Deployment Gate Tracker (Live)
+
+| Gate | Status | Evidence |
+|------|--------|----------|
+| GitHub Environments (`dev`, `prod`) with required reviewer protection | ✅ Complete | Environments created and approvals are being enforced during workflow runs |
+| Branch protection requires CI on `main` | ✅ Complete | `build-and-validate` required status check is active |
+| OIDC federation for deploy identity | ✅ Complete | Federated credentials created for `repo:sl-stlzoo/insights-chat:environment:dev` and `...:prod` |
+| RBAC for deploy identity | ✅ Complete | Reader at subscription, Contributor + User Access Administrator at `rg-maude-dev`, and AcrPush at `maudedevacr` |
+| Dev workflow Azure login | ✅ Complete | `Azure login (OIDC)` step now passes in run `28811115950` |
+| Dev workflow image build | ⚠️ Blocked (fix prepared) | `Build and push web image` fails on `COPY --from=builder /app/public`; fixed in local `Dockerfile`, pending push |
+| Dev workflow deploy + endpoint verification | ⏳ Pending | Unblocked once updated Dockerfile is pushed and build succeeds |
