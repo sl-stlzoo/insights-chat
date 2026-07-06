@@ -28,7 +28,10 @@ export async function POST(request: NextRequest) {
 
     if (!ssoToken) {
       return NextResponse.json(
-        { error: 'A Teams SSO token is required.', errorCode: 'missing_sso_token' },
+        {
+          error: 'A Teams sign-in token is required.',
+          errorCode: 'missing_sso_token',
+        },
         { status: 400 },
       );
     }
@@ -45,8 +48,8 @@ export async function POST(request: NextRequest) {
     if (error instanceof TeamsOboError) {
       return NextResponse.json(
         {
-          error: error.message,
-          errorCode: 'obo_exchange_failed',
+          error: error.userMessage,
+          errorCode: error.code,
         },
         { status: error.status },
       );
@@ -54,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error: 'Teams SSO token exchange failed.',
+        error: 'Teams sign-in could not be completed.',
         errorCode: 'obo_exchange_failed',
       },
       { status: 500 },
