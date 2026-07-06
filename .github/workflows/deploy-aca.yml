@@ -108,6 +108,15 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Allow ARM Key Vault parameter references
+        shell: bash
+        run: |
+          az keyvault update \
+            --name "$KEY_VAULT_NAME" \
+            --resource-group "$AZURE_RESOURCE_GROUP" \
+            --enabled-for-template-deployment true \
+            --only-show-errors
+
       - name: Deploy Bicep and update container images
         shell: bash
         run: |

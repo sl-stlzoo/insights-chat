@@ -10,6 +10,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   properties: {
     tenantId: tenantId
     enableRbacAuthorization: true
+    enabledForTemplateDeployment: true
     enableSoftDelete: true
     enablePurgeProtection: true
     sku: {

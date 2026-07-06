@@ -272,5 +272,5 @@ Generated: 2026-07-02T15:15:13.991-05:00
 | OIDC federation for deploy identity | ✅ Complete | Federated credentials created for `repo:sl-stlzoo/insights-chat:environment:dev` and `...:prod` |
 | RBAC for deploy identity | ✅ Complete | Reader at subscription, Contributor + User Access Administrator at `rg-maude-dev`, and AcrPush at `maudedevacr` |
 | Dev workflow Azure login | ✅ Complete | `Azure login (OIDC)` step now passes in run `28811115950` |
-| Dev workflow image build | ⚠️ Blocked (fix prepared) | `Build and push web image` fails on `COPY --from=builder /app/public`; fixed in local `Dockerfile`, pending push |
-| Dev workflow deploy + endpoint verification | ⏳ Pending | Unblocked once updated Dockerfile is pushed and build succeeds |
+| Dev workflow image build | ✅ Complete | `build-and-push` succeeded in run `28811332456` (web + docs images pushed to ACR) |
+| Dev workflow deploy + endpoint verification | ⚠️ Blocked (fix prepared) | Deploy job fails with `KeyVaultParameterReferenceSecretRetrieveFailed` because ARM cannot read parameter references; workflow now includes `az keyvault update --enabled-for-template-deployment true` and is pending push/retry |
