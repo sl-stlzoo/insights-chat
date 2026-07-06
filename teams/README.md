@@ -23,24 +23,6 @@ delivery model described in the updated PRD.
 - **Identity model:** Entra SSO + OBO for secure downstream access
 - **Authorization model:** group/app-role enforcement with least privilege
 
-## Stage 1 contract (Entra + environment wiring)
-
-- `AZURE_AD_*` variables continue to represent the web app registration for
-  current standalone + ACA authentication.
-- `TEAMS_TAB_AAD_APP_ID` and `TEAMS_API_APPLICATION_ID_URI` describe the Teams
-  tab SSO app identity (`webApplicationInfo`) and API resource URI.
-- `TEAMS_OBO_CLIENT_ID` and `TEAMS_OBO_CLIENT_SECRET` define the confidential
-  app identity used for backend OBO token exchange.
-- `TEAMS_SSO_ALLOWED_AUDIENCES` constrains accepted incoming Teams SSO token
-  audiences.
-- `TEAMS_OBO_SCOPES` limits downstream delegated scopes to a least-privilege set.
-
-All of the above are wired through:
-
-- `.env.example`
-- `infra/main.bicep` and `infra/modules/container-app.bicep`
-- `.github/workflows/deploy-aca.yml`
-
 ## Implementation process pointer
 
 The detailed rollout sequence lives in:
@@ -49,26 +31,11 @@ The detailed rollout sequence lives in:
 - `docs/src/content/docs/project/teams-implementation-process.md`
 - `docs/src/content/docs/project/phase-tracker.md`
 
-## Stage 2 delivery artifacts
+## Planned artifact shape
 
-- `manifest.template.json` (baseline contract with least-privilege permissions)
-- `manifest.dev.json`
-- `manifest.pilot.json`
-- `manifest.prod.json`
-- `validate-manifests.mjs` (hardening gate for schema/security checks)
+As the Teams move progresses, this directory is expected to hold:
 
-Environment manifests expect environment-specific placeholder values:
-
-- `TEAMS_<ENV>_APP_ID`
-- `TEAMS_<ENV>_BOT_ID`
-- `TEAMS_<ENV>_APP_DOMAIN`
-- `TEAMS_<ENV>_TAB_AAD_APP_ID`
-- `TEAMS_<ENV>_API_APPLICATION_ID_URI`
-
-## Validation gate
-
-Run manifest policy checks locally before packaging:
-
-```bash
-npm run teams:validate
-```
+- `manifest.template.json` (baseline contract)
+- environment-specific manifests (for example `manifest.dev.json`,
+  `manifest.pilot.json`, `manifest.prod.json`)
+- packaging/signing notes used by CI/CD promotion workflows

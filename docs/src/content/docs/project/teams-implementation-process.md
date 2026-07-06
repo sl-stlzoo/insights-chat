@@ -72,14 +72,6 @@ with least-privilege access controls.
 | 3 | `app/tab/explorer/*`, bot handlers, authorization guards, policy mapping docs |
 | 4 | `.github/workflows/*`, alerting/dashboards, pilot runbook, phase tracker |
 
-## Current execution status
-
-- **Stage 1:** Complete (env contract wired through `.env.example`, `infra/*`,
-  `.github/workflows/deploy-aca.yml`, and `teams/README.md`).
-- **Stage 2:** Complete (`app/api/teams/sso/obo/route.ts`,
-  `lib/teams-obo.ts`, `app/tab/explorer/TeamsSsoBootstrap.tsx`,
-  `teams/manifest.{dev,pilot,prod}.json`, and `npm run teams:validate`).
-
 ## Gate discipline
 
 - Do not advance stages with unresolved security findings in SSO/OBO or authorization.

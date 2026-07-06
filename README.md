@@ -258,6 +258,7 @@ This repo now includes the first pieces of that delivery shape:
 - `app/tab/explorer/page.tsx` - personal tab-ready Dive workspace route
 - `lib/teams-tab-state.ts` - signed deep-link state token helper
 - `teams/manifest.template.json` - starter Teams manifest
+- `docs/src/content/docs/project/teams-implementation-process.md` - staged implementation sequence and gates
 
 The current web deployment remains the near-term execution target, but the app
 is now being shaped so Teams bot/tab delivery can layer on without reworking the
