@@ -4,8 +4,8 @@ import ChatInterface from '../components/ChatInterface';
 
 // Map app names to model IDs
 const APP_NAME_TO_MODEL: Record<string, string> = {
-  'mash': 'fast',
-  'maude': 'pro',
+  'insights-chat': 'fast',
+  'zd': 'fast',
   'quacker': 'blended',
   'all-the-quackers': 'head-to-head',
 };
