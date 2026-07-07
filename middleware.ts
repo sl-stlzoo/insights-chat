@@ -4,7 +4,7 @@ export const config = {
   matcher: [
     '/',
     '/mash/:path*',
-    '/maude/:path*',
+    '/insights-chat/:path*',
     '/quacker/:path*',
     '/all-the-quackers/:path*',
     '/api/chat',

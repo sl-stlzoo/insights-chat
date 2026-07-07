@@ -16,13 +16,19 @@ export const authOptions: NextAuthOptions = {
         let image = null;
         if (tokens.access_token) {
           try {
-            const res = await fetch('https://graph.microsoft.com/v1.0/me/photo/$value', {
+            const res = await fetch('https://graph.microsoft.com/v1.0/me/photos/48x48/$value', {
               headers: { Authorization: `Bearer ${tokens.access_token}` },
             });
             if (res.ok) {
               const buffer = await res.arrayBuffer();
-              const base64 = Buffer.from(buffer).toString('base64');
-              image = `data:${res.headers.get('content-type')};base64,${base64}`;
+              // Prevent 431 Request Header Fields Too Large by ensuring the image is small enough
+              // (NextAuth stores this in the JWT cookie). 48x48 should be < 2KB.
+              if (buffer.byteLength < 5000) {
+                const base64 = Buffer.from(buffer).toString('base64');
+                image = `data:${res.headers.get('content-type')};base64,${base64}`;
+              } else {
+                console.warn(`Profile photo too large for cookie (${buffer.byteLength} bytes). Skipping.`);
+              }
             }
           } catch (e) {
             console.error('Error fetching profile photo:', e);
