@@ -729,6 +729,14 @@ async function runDatabaseAccessPreflight(mcpClient: McpClient, mcpTools: LlmToo
   const availableTools = new Set(mcpTools.map((tool) => tool.function.name));
   const defaultDbLower = DEFAULT_DATABASE.toLowerCase();
 
+  if (availableTools.has('create_dive')) {
+    if (!process.env.MOTHERDUCK_DIVE_ADMIN_TOKEN || !process.env.MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME) {
+      console.warn(
+        '[Chat API] WARNING: MotherDuck Dive embedding is missing MOTHERDUCK_DIVE_ADMIN_TOKEN or MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME. Dive creation may fail to render.'
+      );
+    }
+  }
+
   if (availableTools.has('list_databases')) {
     const dbListRaw = await executeTool(mcpClient, 'list_databases', {});
     if (!dbListRaw.toLowerCase().includes(defaultDbLower)) {
@@ -1085,7 +1093,14 @@ export async function POST(request: NextRequest) {
               }
 
               const sql = input.sql as string | undefined;
-              const toolResult = await executeTool(mcpClient!, toolName, input);
+              let toolResult = '';
+              try {
+                toolResult = await executeTool(mcpClient!, toolName, input);
+              } catch (err) {
+                console.error(`[Chat API] 🔧 ${logPrefix} TOOL ERROR #${toolCallCount}: ${toolName}`, err);
+                const errorStr = err instanceof Error ? err.message : JSON.stringify(err);
+                toolResult = `Error executing tool: ${errorStr}`;
+              }
               const toolDuration = logTiming(`Tool ${toolName}`, toolStartTime);
               console.log(`[Chat API] 🔧 ${logPrefix} TOOL END #${toolCallCount}: ${toolName} (${toolDuration}ms, ${toolResult.length} chars)`);
               console.log(`[Chat API]    Output: ${toolResult.slice(0, 500)}${toolResult.length > 500 ? '... [truncated]' : ''}`);
