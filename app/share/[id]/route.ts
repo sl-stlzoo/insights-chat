@@ -92,10 +92,10 @@ function generateChatOverlay(model: string | null): string {
 
   // Map model strings to app paths
   var MODEL_TO_PATH = {
-    'gpt-4.1-mini': '/insights-chat',
-    'gpt-4.1': '/insights-chat',
-    'blended': '/insights-chat',
-    'head-to-head': '/insights-chat'
+    'gpt-4.1-mini': '/zd',
+    'gpt-4.1': '/zd',
+    'blended': '/zd',
+    'head-to-head': '/zd'
   };
 
   var form = document.getElementById('maude-chat-form');
@@ -110,8 +110,8 @@ function generateChatOverlay(model: string | null): string {
     var pathParts = window.location.pathname.split('/');
     var shareId = pathParts[pathParts.length - 1];
 
-    // Determine app path from model, default to /insights-chat
-    var appPath = MODEL_TO_PATH[REPORT_MODEL] || '/insights-chat';
+    // Determine app path from model, default to /zd
+    var appPath = MODEL_TO_PATH[REPORT_MODEL] || '/zd';
 
     // Redirect to main app with question, share ID, and model
     var baseUrl = window.location.origin;
