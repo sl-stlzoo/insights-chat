@@ -288,20 +288,6 @@ export function StreamingHtmlFrame({ htmlChunks, isComplete, title, contentId, t
       {showSharePopup && (
         <SharePopup url={shareUrl} onClose={() => setShowSharePopup(false)} theme={theme} />
       )}
-      <button
-        className={`html-frame-share ${isComplete ? 'complete' : ''}`}
-        onClick={handleShare}
-        title={contentId ? "Share" : "Share not available"}
-        disabled={!contentId}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="18" cy="5" r="3"></circle>
-          <circle cx="6" cy="12" r="3"></circle>
-          <circle cx="18" cy="19" r="3"></circle>
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-        </svg>
-      </button>
       {title && <div className="html-frame-title">{title}</div>}
       <iframe
         ref={iframeRef}
@@ -390,20 +376,6 @@ export default function HtmlFrame({ html, title, contentId, theme }: HtmlFramePr
       {showSharePopup && (
         <SharePopup url={shareUrl} onClose={() => setShowSharePopup(false)} theme={theme} />
       )}
-      <button
-        className="html-frame-share complete"
-        onClick={handleShare}
-        title={contentId ? "Share" : "Share not available"}
-        disabled={!contentId}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="18" cy="5" r="3"></circle>
-          <circle cx="6" cy="12" r="3"></circle>
-          <circle cx="18" cy="19" r="3"></circle>
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-        </svg>
-      </button>
       {title && <div className="html-frame-title">{title}</div>}
       <iframe
         ref={iframeRef}

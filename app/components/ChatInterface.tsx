@@ -110,7 +110,8 @@ function detectHtmlStart(text: string): { hasHtml: boolean; htmlStart: number; b
 
 // Unescape escaped triple backticks
 function unescapeMarkdownBackticks(text: string): string {
-  return text.replace(/\\```/g, '```');
+  // Replace one or more backslashes immediately followed by backticks
+  return text.replace(/\\+`/g, '`');
 }
 
 // Helper to remove HTML code blocks from text for display during streaming
@@ -500,10 +501,13 @@ const getVisualizationsAndHtml = (content: MessageContent[]): MessageContent[] =
     c.type === 'html' || c.type === 'streaming_html' || c.type === 'dive'
   );
 
+// These welcome prompts appear on the home screen when a user first logs in.
+// To update these examples, simply change the string values in this array.
+// Ensure they reflect the current most common or valuable queries for the stakeholders.
 const WELCOME_PROMPTS = [
-  'What products do we sell, and how have they performed?',
-  'Which customers buy the largest variety of products?',
-  'Analyze sales by region and show a map with details.',
+  'Summarize the last three weeks of Dinoroarus performance.',
+  'What was our busiest day by attendance and revenue last month?',
+  'Show me YTD Lakeside sales against budget and last year.',
 ];
 
 const MODEL_OPTIONS = [
@@ -1753,8 +1757,8 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
     if (!hasMessageContent(msg)) return null;
 
     const ContentWrapper = msg.role === 'assistant' ? MaxWidthContainer : 'div';
-    const avatarLabel = msg.role === 'assistant' ? 'ZD assistant' : 'Signed-in user';
-    const avatarName = msg.role === 'assistant' ? 'ZD' : (session?.user?.name || 'You');
+    const avatarLabel = msg.role === 'assistant' ? 'zd assistant' : 'Signed-in user';
+    const avatarName = msg.role === 'assistant' ? 'zd' : (session?.user?.name || 'You');
     const userImage = session?.user?.image ? { src: session.user.image } : undefined;
     const assistantIcon = <span style={{ fontSize: '16px' }}>🤓</span>;
 
@@ -1947,7 +1951,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
                 {(headToHeadMessages[model.id] || []).map((msg, idx) => renderMessage(msg, idx, model.id))}
                 {headToHeadLoading[model.id] && (
                   <div className="chat-loading-indicator">
-                    <Avatar className="chat-process-avatar" name={headToHeadToolRunning[model.id] ? 'Data query in progress' : 'Assistant is thinking'} icon={<Spinner size="tiny" />} color="brand" size={24} />
+                    <Avatar className="chat-process-avatar" name="zd" icon={<span style={{ fontSize: '16px' }}>🤓</span>} color="brand" size={24} />
                     <span className="chat-loading-text">
                       {headToHeadToolRunning[model.id] ? 'Querying data' : 'Thinking'}
                     </span>
@@ -1962,7 +1966,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
             {messages.map((msg, idx) => renderMessage(msg, idx, 'msg'))}
             {isLoading && (
               <div className="chat-loading-indicator">
-                <Avatar className="chat-process-avatar" name={isToolRunning ? 'Data query in progress' : 'Assistant is thinking'} icon={<Spinner size="tiny" />} color="brand" size={24} />
+                <Avatar className="chat-process-avatar" name="zd" icon={<span style={{ fontSize: '16px' }}>🤓</span>} color="brand" size={24} />
                 <span className="chat-loading-text">
                   {isToolRunning ? 'Querying data' : 'Thinking'}
                 </span>
