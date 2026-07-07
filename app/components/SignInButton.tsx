@@ -10,7 +10,7 @@ export default function SignInButton() {
       <Button
         className="signin-button"
         appearance="primary"
-        onClick={() => signIn('azure-ad', { callbackUrl: '/maude' })}
+        onClick={() => signIn('azure-ad', { callbackUrl: '/insights-chat' })}
         type="button"
       >
         Sign in with Microsoft Entra ID
