@@ -47,6 +47,8 @@ env:
   TEAMS_OBO_CLIENT_ID: ${{ vars.TEAMS_OBO_CLIENT_ID || vars.APP_AZURE_AD_CLIENT_ID || '' }}
   TEAMS_OBO_SCOPES: ${{ vars.TEAMS_OBO_SCOPES || 'User.Read' }}
   TEAMS_SSO_ALLOWED_AUDIENCES: ${{ vars.TEAMS_SSO_ALLOWED_AUDIENCES || '' }}
+  TEAMS_ALLOWED_ROLES: ${{ vars.TEAMS_ALLOWED_ROLES || '' }}
+  TEAMS_ALLOWED_GROUPS: ${{ vars.TEAMS_ALLOWED_GROUPS || '' }}
   MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME: ${{ vars.MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME }}
   MOTHERDUCK_ALLOWED_DATABASES: ${{ vars.MOTHERDUCK_ALLOWED_DATABASES || 'za_edw_pov' }}
   MOTHERDUCK_DEFAULT_DATABASE: ${{ vars.MOTHERDUCK_DEFAULT_DATABASE || 'za_edw_pov' }}
@@ -150,6 +152,8 @@ jobs:
             "teamsOboClientId": { "value": "${TEAMS_OBO_CLIENT_ID}" },
             "teamsOboScopes": { "value": "${TEAMS_OBO_SCOPES}" },
             "teamsSsoAllowedAudiences": { "value": "${TEAMS_SSO_ALLOWED_AUDIENCES}" },
+            "teamsAllowedRoles": { "value": "${TEAMS_ALLOWED_ROLES}" },
+            "teamsAllowedGroups": { "value": "${TEAMS_ALLOWED_GROUPS}" },
             "teamsOboClientSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_TEAMS_OBO_CLIENT_SECRET}" } },
             "azureAdClientSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_AZURE_AD_CLIENT_SECRET}" } },
             "nextAuthSecret": { "reference": { "keyVault": { "id": "${KEY_VAULT_ID}" }, "secretName": "${KV_SECRET_NEXTAUTH_SECRET}" } },

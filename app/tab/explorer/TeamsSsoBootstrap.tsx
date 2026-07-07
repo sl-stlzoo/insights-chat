@@ -6,7 +6,31 @@ type TeamsSsoState = 'booting' | 'ready' | 'error' | 'skipped';
 
 interface TeamsSsoExchangeResponse {
   error?: string;
+  errorCode?: string;
   exchanged?: boolean;
+}
+
+function resolveUserSafeMessage(errorCode: string | undefined, fallbackMessage: string | undefined) {
+  switch (errorCode) {
+    case 'auth_required':
+      return 'Sign in to the app before continuing in Microsoft Teams.';
+    case 'missing_required_role':
+    case 'missing_required_group':
+      return 'Your account is not authorized for this Teams tab environment.';
+    case 'invalid_audience':
+    case 'invalid_tenant':
+      return 'Your Teams sign-in token is not valid for this app environment.';
+    case 'expired_token':
+      return 'Your Teams sign-in token expired. Reopen the tab and try again.';
+    case 'missing_sso_token':
+      return 'Teams did not return a sign-in token for this tab session.';
+    case 'missing_obo_config':
+      return 'Teams sign-in is not configured for this environment.';
+    case 'obo_exchange_failed':
+      return 'Teams sign-in could not be completed. Try again shortly.';
+    default:
+      return fallbackMessage || 'Teams sign-in could not be completed.';
+  }
 }
 
 export default function TeamsSsoBootstrap() {
@@ -41,7 +65,7 @@ export default function TeamsSsoBootstrap() {
         const payload = (await response.json()) as TeamsSsoExchangeResponse;
 
         if (!response.ok || !payload.exchanged) {
-          throw new Error(payload.error || 'Teams OBO exchange was not completed.');
+          throw new Error(resolveUserSafeMessage(payload.errorCode, payload.error));
         }
 
         if (!disposed) {

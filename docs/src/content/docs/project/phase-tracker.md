@@ -22,12 +22,12 @@ description: Execution tracker for the Azure modernization effort.
 
 | Track | Scope | Status |
 |---|---|---|
-| T1 | Lock target architecture (tab primary + bot assistive/proactive) | In progress |
-| T2 | Finalize Entra app model (registrations, redirects, scopes, consent) | Planned |
-| T3 | Teams SSO and OBO flow implementation | Planned |
-| T4 | Manifest hardening (`dev`/`pilot`/`prod`) | Planned |
-| T5 | Tab UX readiness for Teams iframe/runtime | Planned |
-| T6 | Bot command and deep-link surface | Planned |
+| T1 | Lock target architecture (tab primary + bot assistive/proactive) | Complete |
+| T2 | Finalize Entra app model (registrations, redirects, scopes, consent) | Complete |
+| T3 | Teams SSO and OBO flow implementation | Complete |
+| T4 | Manifest hardening (`dev`, `pilot`, `prod`) | Complete |
+| T5 | Tab UX readiness for Teams iframe/runtime | In progress |
+| T6 | Bot command and deep-link surface | In progress |
 | T7 | Group/app-role authorization + MotherDuck policy mapping | Planned |
 | T8 | CI/CD promotion path (`dev -> pilot -> prod`) for Teams artifacts | Planned |
 | T9 | Teams observability, diagnostics, audit, and alerting | Planned |
@@ -61,3 +61,8 @@ description: Execution tracker for the Azure modernization effort.
 - [ ] Extend CI/CD for Teams package build/sign/publish with promotion gates
 - [ ] Activate Teams-specific telemetry, diagnostics, and audit pipelines
 - [ ] Complete pilot feedback cycle and approve GA rollout
+
+## Latest execution evidence
+
+- PR A: Added Teams-specific tab auth/session states and app-role/group checks on tab/API entry points.
+- PR B: Added bot/card review path deep-link generation endpoint (`/api/teams/review-path`) and deterministic user-safe SSO/OBO failure handling.

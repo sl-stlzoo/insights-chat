@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "6324812663064667469"
+      "version": "0.44.1.10279",
+      "templateHash": "10722188379083086751"
     }
   },
   "parameters": {
@@ -110,6 +110,20 @@
       "defaultValue": "",
       "metadata": {
         "description": "Comma-delimited allowlist of accepted Teams SSO token audiences."
+      }
+    },
+    "teamsAllowedRoles": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-delimited app-role allowlist for Teams tab/API access."
+      }
+    },
+    "teamsAllowedGroups": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Comma-delimited group-object-id allowlist for Teams tab/API access."
       }
     },
     "nextAuthSecret": {
@@ -394,8 +408,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "10895018964014012152"
+              "version": "0.44.1.10279",
+              "templateHash": "421735016644431792"
             }
           },
           "parameters": {
@@ -524,8 +538,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "8109187267448619926"
+              "version": "0.44.1.10279",
+              "templateHash": "6732828199831078539"
             }
           },
           "parameters": {
@@ -607,8 +621,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "602063135424652000"
+              "version": "0.44.1.10279",
+              "templateHash": "8400357444053140612"
             }
           },
           "parameters": {
@@ -691,8 +705,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "2531077161628326505"
+              "version": "0.44.1.10279",
+              "templateHash": "15052485703222759668"
             }
           },
           "parameters": {
@@ -822,8 +836,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "8455035947370408016"
+              "version": "0.44.1.10279",
+              "templateHash": "4059730716032820862"
             }
           },
           "parameters": {
@@ -935,6 +949,12 @@
           "teamsSsoAllowedAudiences": {
             "value": "[parameters('teamsSsoAllowedAudiences')]"
           },
+          "teamsAllowedRoles": {
+            "value": "[parameters('teamsAllowedRoles')]"
+          },
+          "teamsAllowedGroups": {
+            "value": "[parameters('teamsAllowedGroups')]"
+          },
           "motherDuckDiveServiceAccountUsername": {
             "value": "[parameters('motherDuckDiveServiceAccountUsername')]"
           },
@@ -981,8 +1001,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "15460872413209651685"
+              "version": "0.44.1.10279",
+              "templateHash": "8249177814190944765"
             }
           },
           "parameters": {
@@ -1044,6 +1064,14 @@
               "defaultValue": "User.Read"
             },
             "teamsSsoAllowedAudiences": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "teamsAllowedRoles": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "teamsAllowedGroups": {
               "type": "string",
               "defaultValue": ""
             },
@@ -1246,6 +1274,14 @@
                         {
                           "name": "TEAMS_SSO_ALLOWED_AUDIENCES",
                           "value": "[parameters('teamsSsoAllowedAudiences')]"
+                        },
+                        {
+                          "name": "TEAMS_ALLOWED_ROLES",
+                          "value": "[parameters('teamsAllowedRoles')]"
+                        },
+                        {
+                          "name": "TEAMS_ALLOWED_GROUPS",
+                          "value": "[parameters('teamsAllowedGroups')]"
                         },
                         {
                           "name": "OPENAI_API_KEY",

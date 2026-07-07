@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { evaluateTeamsAccess } from '@/lib/teams-access';
 
 interface DiveEmbedSessionRequest {
   diveId?: string;
@@ -9,6 +12,19 @@ const MOTHERDUCK_EMBED_API_ORIGIN = 'https://api.motherduck.com';
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    const accessDecision = evaluateTeamsAccess(session);
+    if (!accessDecision.allowed) {
+      const status = accessDecision.code === 'auth_required' ? 401 : 403;
+      return NextResponse.json(
+        {
+          error: accessDecision.userMessage,
+          errorCode: accessDecision.code,
+        },
+        { status },
+      );
+    }
+
     const { diveId, version } = (await request.json()) as DiveEmbedSessionRequest;
 
     if (!diveId) {
