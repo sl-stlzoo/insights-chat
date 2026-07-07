@@ -7,7 +7,7 @@
 
   /* Saint Louis Zoo canonical palette (Neutral + Sea Lion Sound zone) */
   --charcoal: #483729;
-  --cream: #d5ba8c;
+  --cream: #eae3d8; /* Softened cream, less bright, WCAG compliant */
   --blue: #005589;
   --blue-dark: #052b48;
   --yellow: #d5ba8c;

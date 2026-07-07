@@ -64,6 +64,16 @@ That keeps the deployed app compatible with MotherDuck's secure embedding model
 while still aligning with the Dive Viewer workflow used in MCP App-capable
 clients like Claude.
 
+## Updating Example Prompts
+
+The homepage of the `/insights-chat` application contains three suggested example prompts for stakeholders to get started. 
+
+To update these example prompts:
+1. Open the file `app/components/ChatInterface.tsx`
+2. Locate the `WELCOME_PROMPTS` array.
+3. Replace the string values inside the array with the new prompts.
+4. Commit your changes.
+
 ## Environment contracts
 
 Use the provided examples:
