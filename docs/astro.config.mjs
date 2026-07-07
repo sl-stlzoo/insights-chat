@@ -7,6 +7,7 @@ const siteOrigin = (process.env.PUBLIC_APP_URL || 'https://example.com').replace
 
 // https://astro.build/config
 export default defineConfig({
+	site: siteOrigin,
 	base: '/docs',
 	build: {
 		format: 'directory'
