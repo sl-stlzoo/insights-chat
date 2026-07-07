@@ -7,7 +7,7 @@ interface HomeProps {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
 
-  // Preserve query params when redirecting to /mash
+  // Preserve query params when redirecting to /zd
   const queryString = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined) {
@@ -20,5 +20,5 @@ export default async function Home({ searchParams }: HomeProps) {
   }
 
   const query = queryString.toString();
-  redirect(query ? `/mash?${query}` : '/mash');
+  redirect(query ? `/zd?${query}` : '/zd');
 }

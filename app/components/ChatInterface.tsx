@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Avatar, Spinner } from '@fluentui/react-components';
 import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -57,40 +58,8 @@ function SharedReportFrame({ shareId, currentIsMobile }: SharedReportFrameProps)
   );
 }
 
-// Component to render markdown with share button
-interface MarkdownWithShareProps {
-  content: string;
-  contentId: string;
-  markdownComponents: Components;
-  theme?: string;
-}
 
-function MarkdownWithShare({ content, contentId, markdownComponents, theme }: MarkdownWithShareProps) {
-  const [showSharePopup, setShowSharePopup] = useState(false);
-  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/share/${contentId}`;
 
-  return (
-    <div className="markdown-frame">
-      {showSharePopup && (
-        <SharePopup url={shareUrl} onClose={() => setShowSharePopup(false)} theme={theme} />
-      )}
-      <button
-        className="markdown-share-btn complete"
-        onClick={() => setShowSharePopup(true)}
-        title="Share"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="18" cy="5" r="3"></circle>
-          <circle cx="6" cy="12" r="3"></circle>
-          <circle cx="18" cy="19" r="3"></circle>
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-        </svg>
-      </button>
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{content}</ReactMarkdown>
-    </div>
-  );
-}
 
 // Detect if streaming text contains the start of HTML content with actual renderable content
 function detectHtmlStart(text: string): { hasHtml: boolean; htmlStart: number; beforeText: string } {
@@ -137,6 +106,12 @@ function detectHtmlStart(text: string): { hasHtml: boolean; htmlStart: number; b
   }
 
   return { hasHtml: false, htmlStart: -1, beforeText: '' };
+}
+
+// Unescape escaped triple backticks
+function unescapeMarkdownBackticks(text: string): string {
+  // Replace one or more backslashes immediately followed by backticks
+  return text.replace(/\\+`/g, '`');
 }
 
 // Helper to remove HTML code blocks from text for display during streaming
@@ -526,17 +501,17 @@ const getVisualizationsAndHtml = (content: MessageContent[]): MessageContent[] =
     c.type === 'html' || c.type === 'streaming_html' || c.type === 'dive'
   );
 
+// These welcome prompts appear on the home screen when a user first logs in.
+// To update these examples, simply change the string values in this array.
+// Ensure they reflect the current most common or valuable queries for the stakeholders.
 const WELCOME_PROMPTS = [
-  'What products do we sell, and how have they performed?',
-  'Which customers buy the largest variety of products?',
-  'Analyze sales by region and show a map with details.',
+  'Summarize the last three weeks of Dinoroarus performance.',
+  'What was our busiest day by attendance and revenue last month?',
+  'Show me YTD Lakeside sales against budget and last year.',
 ];
 
 const MODEL_OPTIONS = [
-  { id: 'fast', name: 'OpenAI Fast', model: 'gpt-4.1-mini', appName: 'Zoo Data', subtitle: 'fast OpenAI analysis' },
-  { id: 'pro', name: 'OpenAI Pro', model: 'gpt-4.1', appName: 'zd', subtitle: 'strong OpenAI reasoning' },
-  { id: 'blended', name: 'Blended (Fast + Pro)', model: 'blended', appName: 'Quacker', subtitle: 'two-step live analysis' },
-  { id: 'head-to-head', name: 'Head-to-Head', model: 'head-to-head', appName: 'All the Quackers', subtitle: 'Compare all models' },
+  { id: 'fast', name: 'OpenAI Fast', model: 'gpt-4.1-mini', appName: 'Zoo Data', subtitle: 'fast OpenAI analysis' }
 ];
 
 // Models to run in head-to-head mode
@@ -585,12 +560,13 @@ interface ChatInterfaceProps {
 export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { data: session } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isToolRunning, setIsToolRunning] = useState<string | null>(null);
   const [includeMetadata, setIncludeMetadata] = useState(true);
-  const [selectedModel, setSelectedModel] = useState(initialModel || MODEL_OPTIONS[0].id);
+  const [selectedModel, setSelectedModel] = useState('fast');
   const [sharedReportId, setSharedReportId] = useState<string | null>(null);
   const hasProcessedUrlParams = useRef(false);
 
@@ -1782,7 +1758,9 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
 
     const ContentWrapper = msg.role === 'assistant' ? MaxWidthContainer : 'div';
     const avatarLabel = msg.role === 'assistant' ? 'zd assistant' : 'Signed-in user';
-    const avatarName = msg.role === 'assistant' ? 'zd' : 'You';
+    const avatarName = msg.role === 'assistant' ? 'zd' : (session?.user?.name || 'You');
+    const userImage = session?.user?.image ? { src: session.user.image } : undefined;
+    const assistantIcon = <span style={{ fontSize: '16px' }}>🤓</span>;
 
     const hasHtml = typeof msg.content !== 'string' && msg.content.some(block =>
       (block.type === 'html' && block.html) ||
@@ -1796,11 +1774,19 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
 
     return (
       <div key={`${keyPrefix}-${idx}`} className={`chat-message chat-message-${msg.role}${hasHtml ? ' has-html' : ''}`}>
-        <Avatar className="chat-message-avatar" name={avatarName} aria-label={avatarLabel} color={msg.role === 'assistant' ? 'brand' : 'colorful'} size={28} />
+        <Avatar 
+          className="chat-message-avatar" 
+          name={avatarName} 
+          image={msg.role === 'user' ? userImage : undefined}
+          icon={msg.role === 'assistant' ? assistantIcon : undefined}
+          aria-label={avatarLabel} 
+          color={msg.role === 'assistant' ? 'brand' : 'colorful'} 
+          size={28} 
+        />
         <ContentWrapper className="chat-message-content">
           {typeof msg.content === 'string' ? (
             msg.role === 'assistant' ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{msg.content}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{unescapeMarkdownBackticks(msg.content)}</ReactMarkdown>
             ) : (
               msg.content
             )
@@ -1811,11 +1797,12 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
                 // Filter out both HTML and SQL from displayed text
                 let displayText = filterHtmlFromText(block.text);
                 displayText = filterSqlFromText(displayText);
+                displayText = unescapeMarkdownBackticks(displayText);
                 if (!displayText.trim()) return null;
                 const markdownContent = <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{displayText}</ReactMarkdown>;
-                // If contentId is present, use MarkdownWithShare component for consistent share dialog
                 if (block.contentId) {
-                  return <MarkdownWithShare key={blockKey} content={displayText} contentId={block.contentId} markdownComponents={markdownComponents} theme={themeClass} />;
+                  // Fall back to plain markdown since we removed the share icon
+                  return <div key={blockKey}>{markdownContent}</div>;
                 }
                 return <div key={blockKey}>{markdownContent}</div>;
               }
@@ -1951,29 +1938,6 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
                 </button>
               ))}
             </div>
-            <label className="metadata-toggle">
-              <input
-                type="checkbox"
-                checked={includeMetadata}
-                onChange={(e) => saveIncludeMetadata(e.target.checked)}
-              />
-              <span className="toggle-slider"></span>
-              <span className="toggle-label">Include metadata in prompt</span>
-            </label>
-            <div className="model-selector">
-              <label className="model-selector-label">Model:</label>
-              <select
-                value={selectedModel}
-                onChange={(e) => saveSelectedModel(e.target.value)}
-                className="model-dropdown"
-              >
-                {MODEL_OPTIONS.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
         ) : isHeadToHead ? (
           /* Head-to-head mode: render ALL tabs but only show the active one */
@@ -1987,7 +1951,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
                 {(headToHeadMessages[model.id] || []).map((msg, idx) => renderMessage(msg, idx, model.id))}
                 {headToHeadLoading[model.id] && (
                   <div className="chat-loading-indicator">
-                    <Avatar className="chat-process-avatar" name={headToHeadToolRunning[model.id] ? 'Data query in progress' : 'Assistant is thinking'} icon={<Spinner size="tiny" />} color="brand" size={24} />
+                    <Avatar className="chat-process-avatar" name="zd" icon={<span style={{ fontSize: '16px' }}>🤓</span>} color="brand" size={24} />
                     <span className="chat-loading-text">
                       {headToHeadToolRunning[model.id] ? 'Querying data' : 'Thinking'}
                     </span>
@@ -2002,7 +1966,7 @@ export default function ChatInterface({ initialModel }: ChatInterfaceProps) {
             {messages.map((msg, idx) => renderMessage(msg, idx, 'msg'))}
             {isLoading && (
               <div className="chat-loading-indicator">
-                <Avatar className="chat-process-avatar" name={isToolRunning ? 'Data query in progress' : 'Assistant is thinking'} icon={<Spinner size="tiny" />} color="brand" size={24} />
+                <Avatar className="chat-process-avatar" name="zd" icon={<span style={{ fontSize: '16px' }}>🤓</span>} color="brand" size={24} />
                 <span className="chat-loading-text">
                   {isToolRunning ? 'Querying data' : 'Thinking'}
                 </span>

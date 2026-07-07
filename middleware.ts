@@ -3,8 +3,8 @@ export { default } from 'next-auth/middleware';
 export const config = {
   matcher: [
     '/',
-    '/mash/:path*',
-    '/maude/:path*',
+    '/zd/:path*',
+    '/insights-chat/:path*',
     '/quacker/:path*',
     '/all-the-quackers/:path*',
     '/api/chat',

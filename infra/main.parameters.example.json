@@ -107,6 +107,9 @@
     "motherDuckMetadataFile": {
       "value": "metadata/za_edw_pov.md"
     },
+    "motherDuckContextAudience": {
+      "value": "Saint Louis Zoo business stakeholders"
+    },
     "postgresAdminPassword": {
       "reference": {
         "keyVault": {

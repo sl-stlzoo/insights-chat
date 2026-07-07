@@ -83,6 +83,9 @@ param motherDuckDefaultDatabase string = 'za_edw_pov'
 @description('Relative path in the app container for optional metadata context.')
 param motherDuckMetadataFile string = 'metadata/za_edw_pov.md'
 
+@description('Business audience label injected into dynamic standalone prompt instructions.')
+param motherDuckContextAudience string = 'Saint Louis Zoo business stakeholders'
+
 @description('Administrator username for the Azure Database for PostgreSQL Flexible Server.')
 param postgresAdminUsername string = 'maudeadmin'
 
@@ -291,6 +294,7 @@ module containerApp './modules/container-app.bicep' = {
     motherDuckAllowedDatabases: motherDuckAllowedDatabases
     motherDuckDefaultDatabase: motherDuckDefaultDatabase
     motherDuckMetadataFile: motherDuckMetadataFile
+    motherDuckContextAudience: motherDuckContextAudience
     nextAuthSecretUri: nextAuthSecretResource.properties.secretUriWithVersion
     azureAdClientSecretUri: azureAdClientSecretResource.properties.secretUriWithVersion
     openAiApiKeyUri: openAiApiKeyResource.properties.secretUriWithVersion

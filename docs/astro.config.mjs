@@ -3,9 +3,14 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import starlight from '@astrojs/starlight';
 
+const siteOrigin = (process.env.PUBLIC_APP_URL || 'https://example.com').replace(/\/+$/, '');
+
 // https://astro.build/config
 export default defineConfig({
 	base: '/docs',
+	build: {
+		format: 'directory'
+	},
 	integrations: [
 		react(),
 		starlight({

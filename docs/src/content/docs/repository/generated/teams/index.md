@@ -58,13 +58,9 @@ The detailed rollout sequence lives in:
 - `docs/src/content/docs/project/teams-implementation-process.md`
 - `docs/src/content/docs/project/phase-tracker.md`
 
-## Stage 2 delivery artifacts
+## Planned artifact shape
 
-- `manifest.template.json` (baseline contract with least-privilege permissions)
-- `manifest.dev.json`
-- `manifest.pilot.json`
-- `manifest.prod.json`
-- `validate-manifests.mjs` (hardening gate for schema/security checks)
+As the Teams move progresses, this directory is expected to hold:
 
 ## Stage 3 review-path artifact
 

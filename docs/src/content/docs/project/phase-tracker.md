@@ -52,9 +52,9 @@ description: Execution tracker for the Azure modernization effort.
 
 - [x] Lock hybrid Teams target architecture in platform docs
 - [x] Publish comprehensive implementation process and sequencing
-- [x] Finalize production Entra app registrations and consent scopes
-- [x] Implement Teams SSO token exchange and backend OBO
-- [x] Harden and validate env-specific Teams manifests (`dev`, `pilot`, `prod`)
+- [ ] Finalize production Entra app registrations and consent scopes
+- [ ] Implement Teams SSO token exchange and backend OBO
+- [ ] Harden and validate env-specific Teams manifests (`dev`, `pilot`, `prod`)
 - [ ] Complete Teams-safe tab UX and Fluent session/auth states
 - [ ] Add bot commands and deep-link handoff to tab context
 - [ ] Enforce app-role/group authorization with least-privilege mapping

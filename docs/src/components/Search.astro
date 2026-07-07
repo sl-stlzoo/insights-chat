@@ -1,4 +1,8 @@
-<a class="docs-search-link" href="/docs/search/">
+---
+const searchHref = `${import.meta.env.BASE_URL}search/`;
+---
+
+<a class="docs-search-link" href={searchHref}>
   Search docs
 </a>
 
@@ -8,12 +12,35 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.55rem 0.9rem;
-    border-radius: 999px;
-    border: 1px solid rgba(0, 83, 139, 0.18);
-    background: rgba(255, 255, 255, 0.8);
-    color: var(--sl-color-accent-high);
+    border-radius: 0.5rem;
+    border: 1px solid #94a3b8;
+    background: #ffffff;
+    color: #0f172a;
     font-size: 0.94rem;
     font-weight: 600;
     text-decoration: none;
+  }
+
+  .docs-search-link:hover {
+    background: #f8fafc;
+    border-color: #475569;
+    color: #0f172a;
+  }
+
+  .docs-search-link:focus-visible {
+    outline: 2px solid #00538b;
+    outline-offset: 2px;
+  }
+
+  :root[data-theme='dark'] .docs-search-link {
+    border-color: #64748b;
+    background: #111a2a;
+    color: #f1f5f9;
+  }
+
+  :root[data-theme='dark'] .docs-search-link:hover {
+    border-color: #94a3b8;
+    background: #0b1220;
+    color: #f1f5f9;
   }
 </style>

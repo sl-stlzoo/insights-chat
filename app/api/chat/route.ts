@@ -589,6 +589,8 @@ function parseAllowedDatabases(rawValue: string | undefined): string[] {
 const ALLOWED_DATABASES = parseAllowedDatabases(process.env.MOTHERDUCK_ALLOWED_DATABASES);
 const DEFAULT_DATABASE = process.env.MOTHERDUCK_DEFAULT_DATABASE?.trim() || ALLOWED_DATABASES[0] || '';
 const METADATA_FILE = process.env.MOTHERDUCK_METADATA_FILE?.trim() || DEFAULT_METADATA_FILE;
+const DEFAULT_CONTEXT_AUDIENCE = 'business stakeholders';
+const CONTEXT_AUDIENCE = process.env.MOTHERDUCK_CONTEXT_AUDIENCE?.trim() || DEFAULT_CONTEXT_AUDIENCE;
 
 function resolveMetadataFilePath(metadataFile: string): string {
   return isAbsolute(metadataFile) ? metadataFile : join(process.cwd(), metadataFile);
@@ -727,6 +729,14 @@ async function runDatabaseAccessPreflight(mcpClient: McpClient, mcpTools: LlmToo
   const availableTools = new Set(mcpTools.map((tool) => tool.function.name));
   const defaultDbLower = DEFAULT_DATABASE.toLowerCase();
 
+  if (availableTools.has('create_dive')) {
+    if (!process.env.MOTHERDUCK_DIVE_ADMIN_TOKEN || !process.env.MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME) {
+      console.warn(
+        '[Chat API] WARNING: MotherDuck Dive embedding is missing MOTHERDUCK_DIVE_ADMIN_TOKEN or MOTHERDUCK_DIVE_SERVICE_ACCOUNT_USERNAME. Dive creation may fail to render.'
+      );
+    }
+  }
+
   if (availableTools.has('list_databases')) {
     const dbListRaw = await executeTool(mcpClient, 'list_databases', {});
     if (!dbListRaw.toLowerCase().includes(defaultDbLower)) {
@@ -851,7 +861,7 @@ function parseJsonObject(text: string): Record<string, unknown> | null {
 }
 
 function extractDivePreview(toolName: string, input: Record<string, unknown>, toolResult: string) {
-  if (!['save_dive', 'update_dive', 'share_dive_data'].includes(toolName)) {
+  if (!['create_dive', 'save_dive', 'update_dive', 'share_dive_data'].includes(toolName)) {
     return null;
   }
 
@@ -967,16 +977,12 @@ export async function POST(request: NextRequest) {
 
     // Read metadata file if requested
     let metadata: string | undefined;
-    if (includeMetadata) {
-      try {
-        const metadataPath = resolveMetadataFilePath(METADATA_FILE);
-        metadata = readFileSync(metadataPath, 'utf-8');
-        console.log(`[Chat API] Loaded metadata file '${metadataPath}', length: ${metadata.length}`);
-      } catch {
-        console.log(`[Chat API] Metadata file '${METADATA_FILE}' not found, continuing without it`);
-      }
-    } else {
-      console.log('[Chat API] Metadata disabled by user');
+    try {
+      const metadataPath = resolveMetadataFilePath(METADATA_FILE);
+      metadata = readFileSync(metadataPath, 'utf-8');
+      console.log(`[Chat API] Loaded metadata file '${metadataPath}', length: ${metadata.length}`);
+    } catch {
+      console.log(`[Chat API] Metadata file '${METADATA_FILE}' not found, continuing without it`);
     }
 
     const openai = createOpenAIClient();
@@ -1087,7 +1093,14 @@ export async function POST(request: NextRequest) {
               }
 
               const sql = input.sql as string | undefined;
-              const toolResult = await executeTool(mcpClient!, toolName, input);
+              let toolResult = '';
+              try {
+                toolResult = await executeTool(mcpClient!, toolName, input);
+              } catch (err) {
+                console.error(`[Chat API] 🔧 ${logPrefix} TOOL ERROR #${toolCallCount}: ${toolName}`, err);
+                const errorStr = err instanceof Error ? err.message : JSON.stringify(err);
+                toolResult = `Error executing tool: ${errorStr}`;
+              }
               const toolDuration = logTiming(`Tool ${toolName}`, toolStartTime);
               console.log(`[Chat API] 🔧 ${logPrefix} TOOL END #${toolCallCount}: ${toolName} (${toolDuration}ms, ${toolResult.length} chars)`);
               console.log(`[Chat API]    Output: ${toolResult.slice(0, 500)}${toolResult.length > 500 ? '... [truncated]' : ''}`);
@@ -1378,6 +1391,9 @@ export async function POST(request: NextRequest) {
               const wrappedMessage = composePrompt(standaloneTemplate, {
                 'USER_QUESTION': originalQuestion,
                 'CONVERSATION_CONTEXT': conversationContext,
+                'ALLOWED_DATABASES': ALLOWED_DATABASES.join(', '),
+                'DEFAULT_DATABASE': DEFAULT_DATABASE,
+                'CONTEXT_AUDIENCE': CONTEXT_AUDIENCE,
               });
 
               chatMessages[lastUserIndex] = {

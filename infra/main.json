@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "6745505840729725178"
+      "version": "0.44.1.10279",
+      "templateHash": "10722188379083086751"
     }
   },
   "parameters": {
@@ -175,6 +175,13 @@
       "defaultValue": "metadata/za_edw_pov.md",
       "metadata": {
         "description": "Relative path in the app container for optional metadata context."
+      }
+    },
+    "motherDuckContextAudience": {
+      "type": "string",
+      "defaultValue": "Saint Louis Zoo business stakeholders",
+      "metadata": {
+        "description": "Business audience label injected into dynamic standalone prompt instructions."
       }
     },
     "postgresAdminUsername": {
@@ -401,8 +408,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "10895018964014012152"
+              "version": "0.44.1.10279",
+              "templateHash": "421735016644431792"
             }
           },
           "parameters": {
@@ -531,8 +538,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "8109187267448619926"
+              "version": "0.44.1.10279",
+              "templateHash": "6732828199831078539"
             }
           },
           "parameters": {
@@ -614,8 +621,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "602063135424652000"
+              "version": "0.44.1.10279",
+              "templateHash": "8400357444053140612"
             }
           },
           "parameters": {
@@ -698,8 +705,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "2531077161628326505"
+              "version": "0.44.1.10279",
+              "templateHash": "15052485703222759668"
             }
           },
           "parameters": {
@@ -829,8 +836,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "8455035947370408016"
+              "version": "0.44.1.10279",
+              "templateHash": "4059730716032820862"
             }
           },
           "parameters": {
@@ -960,6 +967,9 @@
           "motherDuckMetadataFile": {
             "value": "[parameters('motherDuckMetadataFile')]"
           },
+          "motherDuckContextAudience": {
+            "value": "[parameters('motherDuckContextAudience')]"
+          },
           "nextAuthSecretUri": {
             "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', variables('keyVaultName'), 'nextauth-secret'), '2023-07-01').secretUriWithVersion]"
           },
@@ -991,8 +1001,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "6979833748736070293"
+              "version": "0.44.1.10279",
+              "templateHash": "8249177814190944765"
             }
           },
           "parameters": {
@@ -1075,6 +1085,9 @@
               "type": "string"
             },
             "motherDuckMetadataFile": {
+              "type": "string"
+            },
+            "motherDuckContextAudience": {
               "type": "string"
             },
             "tags": {
@@ -1297,6 +1310,10 @@
                         {
                           "name": "MOTHERDUCK_METADATA_FILE",
                           "value": "[parameters('motherDuckMetadataFile')]"
+                        },
+                        {
+                          "name": "MOTHERDUCK_CONTEXT_AUDIENCE",
+                          "value": "[parameters('motherDuckContextAudience')]"
                         },
                         {
                           "name": "POSTGRES_DATABASE_URL",
