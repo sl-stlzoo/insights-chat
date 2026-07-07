@@ -853,7 +853,7 @@ function parseJsonObject(text: string): Record<string, unknown> | null {
 }
 
 function extractDivePreview(toolName: string, input: Record<string, unknown>, toolResult: string) {
-  if (!['save_dive', 'update_dive', 'share_dive_data'].includes(toolName)) {
+  if (!['create_dive', 'save_dive', 'update_dive', 'share_dive_data'].includes(toolName)) {
     return null;
   }
 
@@ -969,16 +969,12 @@ export async function POST(request: NextRequest) {
 
     // Read metadata file if requested
     let metadata: string | undefined;
-    if (includeMetadata) {
-      try {
-        const metadataPath = resolveMetadataFilePath(METADATA_FILE);
-        metadata = readFileSync(metadataPath, 'utf-8');
-        console.log(`[Chat API] Loaded metadata file '${metadataPath}', length: ${metadata.length}`);
-      } catch {
-        console.log(`[Chat API] Metadata file '${METADATA_FILE}' not found, continuing without it`);
-      }
-    } else {
-      console.log('[Chat API] Metadata disabled by user');
+    try {
+      const metadataPath = resolveMetadataFilePath(METADATA_FILE);
+      metadata = readFileSync(metadataPath, 'utf-8');
+      console.log(`[Chat API] Loaded metadata file '${metadataPath}', length: ${metadata.length}`);
+    } catch {
+      console.log(`[Chat API] Metadata file '${METADATA_FILE}' not found, continuing without it`);
     }
 
     const openai = createOpenAIClient();
