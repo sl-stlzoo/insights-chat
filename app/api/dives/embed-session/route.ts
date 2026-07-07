@@ -50,7 +50,8 @@ export async function POST(request: NextRequest) {
 
     const payload = (await response.json()) as { session?: string };
     if (!payload.session) {
-      return NextResponse.json({ error: 'MotherDuck did not return an embed session.' }, { status: 502 });
+      console.error('[Embed API] Invalid payload from MotherDuck:', payload);
+      return NextResponse.json({ error: `MotherDuck did not return an embed session. Payload: ${JSON.stringify(payload)}` }, { status: 502 });
     }
 
     return NextResponse.json({ session: payload.session });
