@@ -111,20 +111,23 @@ function detectHtmlStart(text: string): { hasHtml: boolean; htmlStart: number; b
 // Unescape escaped triple backticks
 function unescapeMarkdownBackticks(text: string): string {
   // Replace one or more backslashes immediately followed by backticks
-  return text.replace(/\\+`/g, '`');
+  let unescaped = text.replace(/\\+`/g, '`');
+  // Ensure that code blocks (```) are preceded by a newline so ReactMarkdown parses them correctly
+  unescaped = unescaped.replace(/([^\n])(```[a-z]*\n)/gi, '$1\n\n$2');
+  return unescaped;
 }
 
 // Helper to remove HTML code blocks from text for display during streaming
 function filterHtmlFromText(text: string): string {
-  // Remove ```html ... ``` blocks
-  let filtered = text.replace(/```html\s*[\s\S]*?```/g, '');
+  // Remove ```html ... ``` blocks (ignoring escaped ones)
+  let filtered = text.replace(/(?<!\\)```html\s*[\s\S]*?(?<!\\)```/g, '');
   // Remove plain ``` blocks that contain HTML
-  filtered = filtered.replace(/```\s*<!doctype[\s\S]*?```/gi, '');
-  filtered = filtered.replace(/```\s*<html[\s\S]*?```/gi, '');
+  filtered = filtered.replace(/(?<!\\)```\s*<!doctype[\s\S]*?(?<!\\)```/gi, '');
+  filtered = filtered.replace(/(?<!\\)```\s*<html[\s\S]*?(?<!\\)```/gi, '');
   // Remove incomplete HTML code blocks (still streaming)
-  filtered = filtered.replace(/```html\s*[\s\S]*$/g, '');
-  filtered = filtered.replace(/```\s*<!doctype[\s\S]*$/gi, '');
-  filtered = filtered.replace(/```\s*<html[\s\S]*$/gi, '');
+  filtered = filtered.replace(/(?<!\\)```html\s*[\s\S]*$/g, '');
+  filtered = filtered.replace(/(?<!\\)```\s*<!doctype[\s\S]*$/gi, '');
+  filtered = filtered.replace(/(?<!\\)```\s*<html[\s\S]*$/gi, '');
   // Remove raw HTML documents (complete)
   filtered = filtered.replace(/<!DOCTYPE html[\s\S]*<\/html>/gi, '');
   filtered = filtered.replace(/<html[\s\S]*<\/html>/gi, '');
@@ -172,17 +175,17 @@ type ContentSegment = { type: 'text'; content: string } | { type: 'sql'; content
 function parseContentSegments(text: string): ContentSegment[] {
   const segments: ContentSegment[] = [];
 
-  // Split by SQL code blocks, keeping the delimiters
+  // Split by SQL code blocks, keeping the delimiters (ignore escaped ones)
   // This regex captures: ```sql...``` blocks
-  const parts = text.split(/(```sql[\s\S]*?```|```(?:SELECT|INSERT|UPDATE|DELETE|WITH|CREATE|--)[^`]*```)/gi);
+  const parts = text.split(/((?<!\\)```sql[\s\S]*?(?<!\\)```|(?<!\\)```(?:SELECT|INSERT|UPDATE|DELETE|WITH|CREATE|--)[^`]*(?<!\\)```)/gi);
 
   for (const part of parts) {
     const trimmed = part.trim();
     if (!trimmed) continue;
 
     // Check if this part is a SQL block
-    const sqlMatch = trimmed.match(/^```sql\s*([\s\S]*?)```$/i) ||
-                     trimmed.match(/^```((?:SELECT|INSERT|UPDATE|DELETE|WITH|CREATE|--)[^`]*)```$/i);
+    const sqlMatch = trimmed.match(/^(?<!\\)```sql\s*([\s\S]*?)(?<!\\)```$/i) ||
+                     trimmed.match(/^(?<!\\)```((?:SELECT|INSERT|UPDATE|DELETE|WITH|CREATE|--)[^`]*)(?<!\\)```$/i);
 
     if (sqlMatch) {
       const sql = sqlMatch[1].trim();
