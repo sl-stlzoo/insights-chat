@@ -112,8 +112,16 @@ function detectHtmlStart(text: string): { hasHtml: boolean; htmlStart: number; b
 function unescapeMarkdownBackticks(text: string): string {
   // Replace one or more backslashes immediately followed by backticks
   let unescaped = text.replace(/\\+`/g, '`');
-  // Ensure that code blocks (```) are preceded by a newline so ReactMarkdown parses them correctly
-  unescaped = unescaped.replace(/([^\n])(```[a-z]*\n)/gi, '$1\n\n$2');
+  
+  // Ensure that code blocks (```) are preceded by a blank line (two newlines)
+  // unless they are at the start of the string.
+  unescaped = unescaped.replace(/(^|[^\n])\n?(```[a-zA-Z]*)(?![a-zA-Z])/gi, (match, p1, p2) => {
+    return p1 ? p1 + '\n\n' + p2 : p2;
+  });
+  
+  // Ensure that there is a newline AFTER ```[language] if followed by non-whitespace
+  unescaped = unescaped.replace(/(```[a-zA-Z]*)(?![a-zA-Z])[ \t]*([^\n\s])/gi, '$1\n$2');
+  
   return unescaped;
 }
 
