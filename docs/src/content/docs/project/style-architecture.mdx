@@ -1,0 +1,31 @@
+---
+title: "Styling Architecture"
+description: "Overview of how styles are applied to the application UI and LLM outputs."
+---
+
+This document outlines how styling is managed and applied across the Saint Louis Zoo insights chat application, distinguishing between the application's shell UI and the generated HTML reports.
+
+## Application UI Styling (The Container)
+
+The main application interface uses a custom Saint Louis Zoo-inspired design system.
+
+*   **`app/globals.css`**
+    *   **Purpose:** This is the core stylesheet for the application's React/Next.js frontend.
+    *   **Effects:** It defines CSS variables for the canonical brand palette (e.g., `--charcoal`, `--cream`, `--blue`) and typographic stacks (Meta for sans-serif, Adobe Caslon Pro for serif). It styles the chat interface, markdown syntax highlighting within chat messages, tool use sections, and general app layout.
+*   **Component-Specific Styles**
+    *   Third-party components import their own CSS (e.g., `import 'leaflet/dist/leaflet.css'` in `app/components/ChatMap.tsx` for map rendering).
+
+## LLM Output Styles (The Rendered Reports)
+
+When the LLM generates deep-dive reports, it produces raw HTML that is rendered inside an `iframe` (`HtmlFrame.tsx` / `StreamingHtmlFrame.tsx`). The styling for these generated reports is tightly controlled via prompt engineering to emulate Edward Tufte's data visualization principles.
+
+*   **`prompts/tufte-style-guide.md`**
+    *   **Purpose:** A set of instructions provided to the LLM detailing Tufte's principles (e.g., maximizing the data-ink ratio, using small multiples).
+    *   **Effects:** It instructs the model on which HTML structures and inline CSS classes to use (e.g., `.big-number`, `.bar-container`, `.sparkline`) to ensure the generated data reports are visually dense, clean, and consistent.
+*   **`prompts/html-template.md`**
+    *   **Purpose:** The required HTML boilerplate that the LLM must use as a wrapper for its reports.
+    *   **Effects:** It contains an inline `<style>` block that sets the baseline Tufte-inspired aesthetic. This includes setting the background to a warm cream (`#fffff8`), body text to a serif stack (`Palatino, Georgia, serif`), number fonts to `Source Sans Pro`, and pre-defining utility classes that match the instructions in the Tufte style guide.
+*   **`tufte_style_guide.md` (Root Directory)**
+    *   **Purpose:** A comprehensive reference file and design specification for developers. It mirrors the prompt but contains more extensive examples of how the components should be structured and styled.
+
+By separating the **Zoo-branded application shell** (`globals.css`) from the **Tufte-styled data reports** (injected via `html-template.md` and guided by `tufte-style-guide.md`), the app ensures that the conversational interface feels familiar and on-brand, while the analytical outputs remain clean, dense, and highly readable.
