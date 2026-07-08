@@ -1,40 +1,40 @@
-# Tufte Style Guide for HTML Generation
+# Saint Louis Zoo Style Guide for HTML Generation
 
 ## Core Philosophy
-1. Maximize data-ink ratio — Every pixel should convey information. Remove chartjunk and decorative elements.
-2. Small multiples — Use consistent visual encoding across repeated elements for easy comparison.
-3. Integrate text and data — Weave narrative prose with inline statistics.
-4. High information density — Pack maximum insight into minimum space.
+1. "Animals Always" — Let the data and content take center stage.
+2. Maximize data-ink ratio — Every pixel should convey information. Remove chartjunk and decorative elements.
+3. Zone-Based Theming — Use the Zoo's official color palette (Neutral, WildCare Park, Red Rocks, etc.).
+4. Flat & Clean — Absolutely no 3D elements, drop shadows, shading, or rounded corners (border-radius: 0).
+5. Integrate text and data — Weave narrative prose with inline statistics.
 
 ## Typography
-- Use Google Fonts: Source Sans Pro for numbers, system serif (Palatino, Georgia) for text
-- Big numbers: 42px, letter-spacing: -1px
-- Section headers: 11px uppercase, letter-spacing: 1.5px
-- Body: 14px, line-height: 1.6
-- Tables: 12px body, 10px headers
+- Fonts: Use 'Meta', Arial, sans-serif for body text. Use 'Adobe Caslon Pro', 'Times New Roman', serif for headers.
+- Big numbers: 48px, bold.
+- Section headers: 24px, serif font, with a solid bottom border.
+- Body: 16px, line-height: 1.5.
+- Tables: 16px body, 14px uppercase headers.
 
-## Color Palette
-- Background: #fffff8 (warm cream, Tufte signature)
-- Text: #111 (primary), #666 (secondary), #999 (tertiary)
-- Accent: #a00 (burgundy - use sparingly for emphasis)
-- Lines/borders: #ccc
-- Bars: #888 (grayscale)
+## Color Palette (Canonical)
+- Background: #FFFFFF (White) or #D5BA8C (Neutral Light - Tan/Khaki) for cards/emphasis.
+- Text: #483729 (Neutral Dark - Charcoal) for maximum WCAG contrast.
+- Lines/borders: #8C847A (Neutral Primary).
+- Accent (Bars): Use a Zone Primary color like #00793F (WildCare Park Primary) or #C12033 (Red Rocks Primary).
+- Highlight/Accent Text: #8A2433 (Red Rocks Dark) - use sparingly.
 
-## Layout
-- padding: 40px 60px, max-width: 1200px
-- Use CSS Grid: 4-col for KPIs, 2-col for main content, 3-col for details
-- Section spacing: 28px between major sections
+## Layout & Shapes
+- Use CSS Grid: auto-fit with minmax(280px, 1fr) for data cards/KPIs.
+- Box Shadows: shadow-none (None).
+- Border Radius: rounded-none (0px). Keep edges crisp.
+- Padding: 40px 60px for body, max-width: 1536px.
 
 ## Components to Use
-- Big numbers with small labels for KPIs
-- Inline bar charts in tables (div with percentage width)
-- SVG sparklines with area fill and accent dot on final point
-- Horizontal bar rows for year-over-year comparisons
-- Tables with right-aligned numeric columns using tabular-nums
+- Big numbers (KPIs) in flat .card containers with .big-number and .big-number-label.
+- Inline bar charts in tables (div with percentage width) using a Zone Primary color.
+- SVG sparklines with flat paths and no drop shadows.
+- Tables with right-aligned numeric columns.
 
 ## Anti-patterns (Avoid)
-- No pie charts (use tables with inline bars)
-- No 3D effects, gradients for decoration
-- No colored section backgrounds
-- No chart borders/frames
-- No excessive gridlines
+- NO pie charts (use tables with inline bars).
+- NO 3D effects, gradients, shadows, or shading.
+- NO rounded corners (do not use border-radius).
+- NO off-brand colors (stick strictly to the Zoo Zone palette).
