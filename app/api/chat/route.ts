@@ -878,12 +878,18 @@ function extractDivePreview(toolName: string, input: Record<string, unknown>, to
         ? parsed.url
         : toolResult.match(/https:\/\/app\.motherduck\.com\/dives\/[0-9a-f-]+/i)?.[0];
 
-  const diveId =
+  let rawDiveId =
     typeof diveRecord?.id === 'string'
       ? diveRecord.id
-      : typeof input.diveId === 'string'
-        ? input.diveId
-        : diveUrl?.split('/').pop();
+      : typeof input.dive_id === 'string'
+        ? input.dive_id
+        : typeof input.diveId === 'string'
+          ? input.diveId
+          : typeof parsed?.dive_id === 'string'
+            ? parsed.dive_id
+            : diveUrl?.split('/').pop();
+
+  const diveId = typeof rawDiveId === 'string' ? rawDiveId.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)?.[0] : undefined;
 
   if (!diveId) {
     return null;
