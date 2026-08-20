@@ -5,18 +5,18 @@
   "version": "1.2.0",
   "packageName": "com.enterprise.maude.analytics",
   "developer": {
-    "name": "Enterprise Analytics",
+    "name": "Data Services and Solutions",
     "websiteUrl": "${PUBLIC_APP_URL}",
     "privacyUrl": "${PUBLIC_APP_URL}/docs",
     "termsOfUseUrl": "${PUBLIC_APP_URL}/docs"
   },
   "name": {
-    "short": "Maude Foundry",
-    "full": "Maude Analytics Assistant"
+    "short": "Insights Chat",
+    "full": "Insights Chat"
   },
   "description": {
-    "short": "Secure MotherDuck analytics assistant.",
-    "full": "Queries corporate data stores via Azure AI Foundry endpoints, surfacing telemetry in a Teams-ready Dive workspace."
+    "short": "Experimental demo of in-Teams chat interface for Zoo reporting data.",
+    "full": "Experimental demo of in-Teams chat interface for Zoo reporting data."
   },
   "icons": {
     "color": "color.png",
@@ -30,18 +30,25 @@
       "name": "Data Explorer Workspace",
       "contentUrl": "${PUBLIC_APP_URL}/tab/explorer",
       "websiteUrl": "${PUBLIC_APP_URL}/tab/explorer",
-      "scopes": ["personal"]
+      "scopes": [
+        "personal"
+      ]
     }
   ],
   "bots": [
     {
       "botId": "${TEAMS_BOT_ID}",
-      "scopes": ["personal", "team"],
+      "scopes": [
+        "personal",
+        "team"
+      ],
       "supportsFiles": false,
       "isNotificationOnly": false
     }
   ],
-  "permissions": ["identity"],
+  "permissions": [
+    "identity"
+  ],
   "validDomains": [
     "${APP_DOMAIN}"
   ],

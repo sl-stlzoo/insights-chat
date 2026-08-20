@@ -5,18 +5,18 @@
   "version": "1.2.0",
   "packageName": "com.enterprise.maude.analytics.dev",
   "developer": {
-    "name": "Enterprise Analytics",
+    "name": "Data Services and Solutions",
     "websiteUrl": "https://${TEAMS_DEV_APP_DOMAIN}",
     "privacyUrl": "https://${TEAMS_DEV_APP_DOMAIN}/docs",
     "termsOfUseUrl": "https://${TEAMS_DEV_APP_DOMAIN}/docs"
   },
   "name": {
-    "short": "Maude Dev",
-    "full": "Maude Analytics Assistant (Dev)"
+    "short": "Insights Chat (preview/alpha)",
+    "full": "Insights Chat (preview/alpha)"
   },
   "description": {
-    "short": "Secure MotherDuck analytics assistant (dev).",
-    "full": "Development Teams package for tab-first analytics with Entra SSO and backend OBO exchange."
+    "short": "Experimental demo of in-Teams chat interface for Zoo reporting data.",
+    "full": "Experimental demo of in-Teams chat interface for Zoo reporting data."
   },
   "icons": {
     "color": "color.png",
@@ -30,19 +30,28 @@
       "name": "Data Explorer Workspace",
       "contentUrl": "https://${TEAMS_DEV_APP_DOMAIN}/tab/explorer",
       "websiteUrl": "https://${TEAMS_DEV_APP_DOMAIN}/tab/explorer",
-      "scopes": ["personal"]
+      "scopes": [
+        "personal"
+      ]
     }
   ],
   "bots": [
     {
       "botId": "${TEAMS_DEV_BOT_ID}",
-      "scopes": ["personal", "team"],
+      "scopes": [
+        "personal",
+        "team"
+      ],
       "supportsFiles": false,
       "isNotificationOnly": false
     }
   ],
-  "permissions": ["identity"],
-  "validDomains": ["${TEAMS_DEV_APP_DOMAIN}"],
+  "permissions": [
+    "identity"
+  ],
+  "validDomains": [
+    "${TEAMS_DEV_APP_DOMAIN}"
+  ],
   "webApplicationInfo": {
     "id": "${TEAMS_DEV_TAB_AAD_APP_ID}",
     "resource": "${TEAMS_DEV_API_APPLICATION_ID_URI}"
